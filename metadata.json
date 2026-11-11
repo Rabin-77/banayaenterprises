@@ -1,0 +1,7 @@
+{
+  "name": "Banayana Enterprise",
+  "description": "Banayana Enterprise - Premium natural and traditional wellness products e-commerce store crafted from authentic ingredients and heritage recipes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
