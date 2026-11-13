@@ -14,6 +14,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [isAddedAnim, setIsAddedAnim] = useState(false);
 
   useEffect(() => {
+    setSelectedWeight(product.defaultWeight);
+  }, [product.id, product.defaultWeight]);
+
+  useEffect(() => {
     if (!product.weightOptions.includes(selectedWeight)) {
       setSelectedWeight(product.defaultWeight);
     }

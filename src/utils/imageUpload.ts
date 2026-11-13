@@ -1,4 +1,4 @@
-const ADMIN_PASSKEY = 'banayana00123';
+import { getAdminSessionPasskey } from './adminAuth';
 
 /**
  * Resize and optimize an image file on a canvas so uploads are crisp,
@@ -67,7 +67,7 @@ export async function uploadProductImage(file: File): Promise<string> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-admin-passkey': ADMIN_PASSKEY
+        'x-admin-passkey': getAdminSessionPasskey()
       },
       body: JSON.stringify({
         dataUrl: optimizedDataUrl,

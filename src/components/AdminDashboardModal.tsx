@@ -12,6 +12,7 @@ import { useShop } from '../context/ShopContext';
 import { Product, Order } from '../types';
 import { CATEGORIES } from '../data/categories';
 import { uploadProductImage } from '../utils/imageUpload';
+import { clearAdminSession, hasAdminSession, setAdminSessionPasskey } from '../utils/adminAuth';
 
 // Official Authentic Sourced Images for Fast Selection (Primary & Secondary Views)
 const PRESET_GALLERY_IMAGES = [
@@ -49,9 +50,6 @@ interface AdminDashboardModalProps {
   onClose: () => void;
 }
 
-// Master Admin passkey
-const ADMIN_PASSKEY = 'banayana00123';
-
 export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen, onClose }) => {
   const {
     products,
@@ -67,15 +65,10 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   } = useShop();
 
   // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    try {
-      return sessionStorage.getItem('banaya_admin_auth') === 'true';
-    } catch {
-      return false;
-    }
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => hasAdminSession());
   const [passkeyInput, setPasskeyInput] = useState('');
   const [passkeyError, setPasskeyError] = useState(false);
+  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // Active Tab
@@ -105,32 +98,44 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   const [confirmDeleteOrderId, setConfirmDeleteOrderId] = useState<string | null>(null);
   const [confirmDeleteProductId, setConfirmDeleteProductId] = useState<string | null>(null);
 
-  // Handle Login
-  const handleLogin = (e: React.FormEvent) => {
+  // Handle Login (server-verified so passkey is never exposed in client UI/bundle)
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passkeyInput === ADMIN_PASSKEY) {
-      setIsAuthenticated(true);
-      try {
-        sessionStorage.setItem('banaya_admin_auth', 'true');
-      } catch {
-        // Ignore storage errors in sandboxed iframes
-      }
-      setPasskeyError(false);
-      setPasskeyInput('');
-      showToast('Admin Authorized', 'Welcome to Banaya Enterprise Admin Portal', 'success');
-    } else {
+    const trimmed = passkeyInput.trim();
+    if (!trimmed || isVerifyingPasskey) {
       setPasskeyError(true);
+      return;
+    }
+
+    setIsVerifyingPasskey(true);
+    try {
+      const res = await fetch('/api/admin/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passkey: trimmed })
+      });
+
+      if (res.ok) {
+        setAdminSessionPasskey(trimmed);
+        setIsAuthenticated(true);
+        setPasskeyError(false);
+        setPasskeyInput('');
+        showToast('Admin Authorized', 'Welcome to Banaya Enterprise Admin Portal', 'success');
+      } else {
+        setPasskeyError(true);
+      }
+    } catch {
+      setPasskeyError(true);
+      showToast('Verification Unavailable', 'Could not reach server to verify administrator access.', 'warning');
+    } finally {
+      setIsVerifyingPasskey(false);
     }
   };
 
   // Handle Logout
   const handleLogout = () => {
     setIsAuthenticated(false);
-    try {
-      sessionStorage.removeItem('banaya_admin_auth');
-    } catch {
-      // Ignore storage errors in sandboxed iframes
-    }
+    clearAdminSession();
     showToast('Admin Signed Out', 'Secure session ended.', 'info');
   };
 
@@ -232,6 +237,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
 
   // Quick inline price change state
   const [quickPrices, setQuickPrices] = useState<Record<string, number>>({});
+  const [lastSavedBanner, setLastSavedBanner] = useState<{ name: string; price: number } | null>(null);
 
   const handleQuickPriceChange = (prodId: string, val: number) => {
     setQuickPrices(prev => ({ ...prev, [prodId]: val }));
@@ -245,7 +251,10 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
       price: newPrice,
       originalPrice: prod.originalPrice && prod.originalPrice > newPrice ? prod.originalPrice : Math.round(newPrice * 1.25)
     };
-    await updateProduct(updated);
+    const saved = await updateProduct(updated);
+    if (saved) {
+      setLastSavedBanner({ name: updated.name, price: updated.price });
+    }
     setQuickPrices(prev => {
       const copy = { ...prev };
       delete copy[prod.id];
@@ -258,11 +267,13 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
 
   // Upload Primary Front Image (Cover Photo) -> Uploads & persists to server
   const handleUploadPrimaryImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const inputEl = e.target;
+    const file = inputEl.files?.[0];
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
       showToast('File Too Large', 'Please upload an image smaller than 10MB.', 'warning');
+      inputEl.value = '';
       return;
     }
 
@@ -283,17 +294,20 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
     } catch {
       showToast('Upload Failed', 'Could not process image file. Please try another photo.', 'warning');
     } finally {
+      inputEl.value = '';
       setIsUploadingImage(false);
     }
   };
 
   // Upload Secondary Image (Side Phase, Back Packaging, Nutritional Label, Texture)
   const handleUploadSecondaryImage = async (slotIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const inputEl = e.target;
+    const file = inputEl.files?.[0];
     if (!file) return;
 
     if (file.size > 10 * 1024 * 1024) {
       showToast('File Too Large', 'Please upload an image smaller than 10MB.', 'warning');
+      inputEl.value = '';
       return;
     }
 
@@ -321,6 +335,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
     } catch {
       showToast('Upload Failed', 'Could not process image file. Please try another photo.', 'warning');
     } finally {
+      inputEl.value = '';
       setIsUploadingImage(false);
     }
   };
@@ -435,8 +450,9 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   // Save Product (Edit or Create)
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productForm.name || !productForm.price) {
-      showToast('Validation Error', 'Product Name and Customer Price are required.', 'warning');
+    const numericPrice = Number(productForm.price);
+    if (!productForm.name?.trim() || !Number.isFinite(numericPrice) || numericPrice <= 0) {
+      showToast('Validation Error', 'Please enter a valid Product Name and Customer Price (₹ > 0).', 'warning');
       return;
     }
 
@@ -449,7 +465,32 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
       return [String(val)];
     };
 
-    const finalWeights = parseList(productForm.weightOptions);
+    const parsedWeights = parseList(productForm.weightOptions);
+    const finalWeights = parsedWeights.length > 0 ? parsedWeights : ['100g', '250g', '500g'];
+    const trimmedDefaultWeight = productForm.defaultWeight?.trim() || '';
+    const finalDefaultWeight =
+      trimmedDefaultWeight && finalWeights.includes(trimmedDefaultWeight)
+        ? trimmedDefaultWeight
+        : trimmedDefaultWeight
+          ? trimmedDefaultWeight
+          : finalWeights[0];
+    const normalizedWeights = finalWeights.includes(finalDefaultWeight)
+      ? finalWeights
+      : [finalDefaultWeight, ...finalWeights];
+
+    const primaryImg = (productForm.image || '').trim() || '/images/banaya_honey.jpg';
+    const rawGallery = Array.isArray(productForm.gallery)
+      ? productForm.gallery.map(g => String(g).trim()).filter(Boolean)
+      : [];
+    const finalGallery = rawGallery.length > 0
+      ? [primaryImg, ...rawGallery.slice(1)]
+      : [primaryImg];
+
+    const numericMrp = Number(productForm.originalPrice);
+    const finalMrp = Number.isFinite(numericMrp) && numericMrp > 0
+      ? numericMrp
+      : Math.round(numericPrice * 1.25);
+
     const compiledProduct: Product = {
       id: productForm.id || `banaya-${Date.now().toString().slice(-4)}`,
       name: productForm.name.trim(),
@@ -457,16 +498,16 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
       tagline: productForm.tagline?.trim() || '100% Pure Natural Herb & Wellness',
       category: productForm.category || 'Traditional Wellness',
       categorySlug: productForm.categorySlug || 'traditional-wellness',
-      price: Number(productForm.price) || 200,
-      originalPrice: Number(productForm.originalPrice) || Math.round(Number(productForm.price) * 1.25),
+      price: numericPrice,
+      originalPrice: finalMrp,
       rating: Number(productForm.rating) || 4.9,
       reviewsCount: Number(productForm.reviewsCount) || 12,
       inStock: productForm.inStock !== false,
-      weightOptions: finalWeights.length > 0 ? finalWeights : ['100g', '250g', '500g'],
-      defaultWeight: productForm.defaultWeight || (finalWeights[0] || '100g'),
+      weightOptions: normalizedWeights,
+      defaultWeight: finalDefaultWeight,
       badges: parseList(productForm.badges).length > 0 ? parseList(productForm.badges) : ['100% Pure'],
-      image: productForm.image || '/images/banaya_honey.jpg',
-      gallery: productForm.gallery && productForm.gallery.length > 0 ? productForm.gallery : [productForm.image || '/images/banaya_honey.jpg'],
+      image: primaryImg,
+      gallery: finalGallery,
       description: productForm.description || '',
       ingredients: parseList(productForm.ingredients).length > 0 ? parseList(productForm.ingredients) : ['100% Pure Native Botanical Ingredients'],
       keyBenefits: parseList(productForm.keyBenefits).length > 0 ? parseList(productForm.keyBenefits) : ['Supports natural vitality and immune defense'],
@@ -478,10 +519,11 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
 
     setIsSavingProduct(true);
     try {
-      if (isCreatingNewProduct) {
-        await addProduct(compiledProduct);
-      } else {
-        await updateProduct(compiledProduct);
+      const saved = isCreatingNewProduct
+        ? await addProduct(compiledProduct)
+        : await updateProduct(compiledProduct);
+      if (saved) {
+        setLastSavedBanner({ name: compiledProduct.name, price: compiledProduct.price });
       }
       setEditingProduct(null);
       setIsCreatingNewProduct(false);
@@ -621,22 +663,23 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
               {passkeyError && (
                 <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2 text-left">
                   <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
-                  <span>Invalid passkey. Master admin passkey is <strong>banayana00123</strong></span>
+                  <span>Invalid passkey. Access is restricted to authorized administrators only.</span>
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full py-3 bg-[#064E3B] hover:bg-[#047857] text-white font-bold text-sm rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                disabled={isVerifyingPasskey}
+                className="w-full py-3 bg-[#064E3B] hover:bg-[#047857] disabled:opacity-60 text-white font-bold text-sm rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <Lock className="w-4 h-4 text-amber-300" />
-                <span>Unlock Admin Portal</span>
+                <span>{isVerifyingPasskey ? 'Verifying Access...' : 'Unlock Admin Portal'}</span>
               </button>
             </form>
 
             <div className="mt-8 pt-6 border-t border-slate-100 w-full text-center">
               <p className="text-[11px] text-slate-400">
-                Staff Passkey: <code className="bg-slate-100 text-slate-800 px-2 py-0.5 rounded font-mono font-bold">banayana00123</code>
+                Protected Administrator Portal • Banaya Enterprises
               </p>
             </div>
           </div>
@@ -1218,6 +1261,41 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                     </button>
                   </div>
 
+                  {/* Live Sync Confirmation Banner */}
+                  {lastSavedBanner && (
+                    <div className="bg-emerald-50 border border-emerald-300 rounded-2xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                      <div className="flex items-center gap-2.5 text-xs text-emerald-950">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                        <span>
+                          <strong>{lastSavedBanner.name}</strong> (₹{lastSavedBanner.price}) is saved & updated live on your website!
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onClose();
+                            setTimeout(() => {
+                              document.getElementById('shop-products')?.scrollIntoView({ behavior: 'smooth' });
+                            }, 120);
+                          }}
+                          className="px-3 py-1.5 bg-[#064E3B] hover:bg-[#047857] text-white text-xs font-bold rounded-xl cursor-pointer inline-flex items-center gap-1.5"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5 text-amber-300" />
+                          <span>View Live Website</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setLastSavedBanner(null)}
+                          className="p-1 text-emerald-700 hover:text-emerald-950 cursor-pointer"
+                          title="Dismiss"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Quick Product Section Selector (Honey, Malai Thean, ABC Malt, etc.) */}
                   <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -1241,7 +1319,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                           const chosen = products.find(p => p.id === e.target.value);
                           if (chosen) handleStartEditProduct(chosen);
                         }}
-                        defaultValue=""
+                        value=""
                         className="px-3 py-1.5 text-xs rounded-xl border border-emerald-300 bg-emerald-50/50 font-bold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
                       >
                         <option value="" disabled>Select Product to Modify...</option>
@@ -1421,12 +1499,19 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500">₹</span>
                                       <input
                                         type="number"
+                                        step="any"
                                         value={currentQuickVal}
                                         onChange={(e) => handleQuickPriceChange(prod.id, Number(e.target.value))}
+                                        onKeyDown={(e) => {
+                                          if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            handleSaveQuickPrice(prod);
+                                          }
+                                        }}
                                         className={`w-full pl-6 pr-2 py-1 text-xs font-bold rounded-lg border ${
                                           isEditingQuickPrice ? 'border-amber-400 bg-amber-50/50' : 'border-slate-200 bg-slate-50'
                                         } focus:outline-none focus:border-emerald-600 focus:bg-white`}
-                                        title="Directly edit price"
+                                        title="Edit price and press Enter or click Save"
                                       />
                                     </div>
 
@@ -1711,7 +1796,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
               </div>
 
               {/* Main 2-Column Split: Form (Left) & Live Preview (Right) */}
-              <form onSubmit={handleSaveProduct} className="space-y-6">
+              <form onSubmit={handleSaveProduct} noValidate className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                   
                   {/* Left Form Controls (7 Cols) */}
@@ -1738,9 +1823,9 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-500">₹</span>
                             <input
                               type="number"
-                              required
-                              value={productForm.price || ''}
-                              onChange={(e) => setProductForm({ ...productForm, price: Number(e.target.value) })}
+                              step="any"
+                              value={productForm.price ?? ''}
+                              onChange={(e) => setProductForm({ ...productForm, price: e.target.value === '' ? undefined : Number(e.target.value) })}
                               placeholder="e.g. 300"
                               className="w-full pl-7 pr-3 py-2 text-sm rounded-xl border border-amber-300 bg-white font-extrabold text-slate-950 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                             />
@@ -1755,8 +1840,9 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">₹</span>
                             <input
                               type="number"
-                              value={productForm.originalPrice || ''}
-                              onChange={(e) => setProductForm({ ...productForm, originalPrice: Number(e.target.value) })}
+                              step="any"
+                              value={productForm.originalPrice ?? ''}
+                              onChange={(e) => setProductForm({ ...productForm, originalPrice: e.target.value === '' ? undefined : Number(e.target.value) })}
                               placeholder="e.g. 380"
                               className="w-full pl-7 pr-3 py-2 text-sm rounded-xl border border-slate-300 bg-white font-bold text-slate-600 focus:outline-none focus:border-emerald-600"
                             />

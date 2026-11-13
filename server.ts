@@ -196,20 +196,24 @@ function createInitialOrders(products: StoredProduct[]): StoredOrder[] {
 
 function loadInitialStore(): StoreState {
   const defaultProducts = loadDefaultProducts();
+  const repoStoreFile = path.join(ROOT_DIR, 'data', 'store.json');
+  const candidateFiles = STORE_FILE === repoStoreFile ? [STORE_FILE] : [STORE_FILE, repoStoreFile];
 
-  try {
-    if (fs.existsSync(STORE_FILE)) {
-      const raw = fs.readFileSync(STORE_FILE, 'utf8');
-      const parsed = JSON.parse(raw) as Partial<StoreState>;
-      return {
-        products: Array.isArray(parsed.products) && parsed.products.length > 0 ? parsed.products : defaultProducts,
-        orders: Array.isArray(parsed.orders) ? parsed.orders : createInitialOrders(defaultProducts),
-        adminNotes: parsed.adminNotes && typeof parsed.adminNotes === 'object' ? parsed.adminNotes : {},
-        updatedAt: typeof parsed.updatedAt === 'number' ? parsed.updatedAt : Date.now()
-      };
+  for (const filePath of candidateFiles) {
+    try {
+      if (fs.existsSync(filePath)) {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        const parsed = JSON.parse(raw) as Partial<StoreState>;
+        return {
+          products: Array.isArray(parsed.products) && parsed.products.length > 0 ? parsed.products : defaultProducts,
+          orders: Array.isArray(parsed.orders) ? parsed.orders : createInitialOrders(defaultProducts),
+          adminNotes: parsed.adminNotes && typeof parsed.adminNotes === 'object' ? parsed.adminNotes : {},
+          updatedAt: typeof parsed.updatedAt === 'number' ? parsed.updatedAt : Date.now()
+        };
+      }
+    } catch (err) {
+      console.error(`Failed to load ${filePath}, trying next fallback:`, err);
     }
-  } catch (err) {
-    console.error('Failed to load store.json, falling back to defaults:', err);
   }
 
   return {
@@ -275,12 +279,32 @@ async function startServer(): Promise<void> {
 
   app.use(express.json({ limit: '15mb' }));
 
-  // Serve uploaded product images cleanly in both dev & production
+  // Serve uploaded product images cleanly in both dev & production (with bundled fallbacks)
   app.use('/uploads', express.static(UPLOADS_DIR, { maxAge: '7d' }));
+  const publicUploadsDir = path.join(ROOT_DIR, 'public', 'uploads');
+  if (UPLOADS_DIR !== publicUploadsDir && fs.existsSync(publicUploadsDir)) {
+    app.use('/uploads', express.static(publicUploadsDir, { maxAge: '7d' }));
+  }
+  const distUploadsDir = path.join(DIST_DIR, 'uploads');
+  if (fs.existsSync(distUploadsDir)) {
+    app.use('/uploads', express.static(distUploadsDir, { maxAge: '7d' }));
+  }
 
   // Health check
   app.get('/api/health', (_req: Request, res: Response) => {
     res.json({ ok: true, updatedAt: storeState.updatedAt });
+  });
+
+  // Verify admin passkey server-side without exposing passkey in client UI
+  app.post('/api/admin/verify', (req: Request, res: Response) => {
+    const bodyPasskey = typeof req.body?.passkey === 'string' ? req.body.passkey : '';
+    const headerPasskey = req.header('x-admin-passkey') || '';
+    const candidate = bodyPasskey || headerPasskey;
+    if (candidate === ADMIN_PASSKEY) {
+      res.json({ ok: true });
+      return;
+    }
+    res.status(401).json({ error: 'Invalid administrator passkey' });
   });
 
   // Read full live storefront state
@@ -535,8 +559,17 @@ async function startServer(): Promise<void> {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(DIST_DIR));
+    app.use(
+      express.static(DIST_DIR, {
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith('index.html')) {
+            res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+          }
+        }
+      })
+    );
     app.get('*', (_req: Request, res: Response) => {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
       res.sendFile(path.join(DIST_DIR, 'index.html'));
     });
   }

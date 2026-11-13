@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useRef,
 import { Product, CartItem, Order, ActiveModal } from '../types';
 import { PRODUCTS } from '../data/products';
 import { getPriceForProductWeight } from '../utils/pricing';
+import { getAdminSessionPasskey } from '../utils/adminAuth';
 
-const ADMIN_PASSKEY = 'banayana00123';
 const SYNC_CHANNEL_NAME = 'banaya_store_sync';
 
 interface ToastMessage {
@@ -81,9 +81,9 @@ interface ShopContextType {
   openOrderTracking: (orderId: string) => void;
 
   // Product Management (Admin)
-  updateProduct: (updatedProduct: Product) => Promise<void>;
-  addProduct: (newProduct: Product) => Promise<void>;
-  deleteProduct: (productId: string) => Promise<void>;
+  updateProduct: (updatedProduct: Product) => Promise<boolean>;
+  addProduct: (newProduct: Product) => Promise<boolean>;
+  deleteProduct: (productId: string) => Promise<boolean>;
 
   // Order & Customer Management (Admin)
   updateOrderStatus: (orderId: string, status: Order['status'], trackingNumber?: string, adminNotes?: string) => void;
@@ -318,7 +318,21 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }, 15000);
 
+    const handleStorageSync = (e: StorageEvent) => {
+      if (e.key === 'banaya_products' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setProducts(parsed);
+          }
+        } catch {
+          // ignore malformed storage value
+        }
+      }
+    };
+
     window.addEventListener('focus', handleVisibilityOrFocus);
+    window.addEventListener('storage', handleStorageSync);
     document.addEventListener('visibilitychange', handleVisibilityOrFocus);
 
     return () => {
@@ -326,6 +340,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       broadcastChannelRef.current?.close();
       window.clearInterval(syncTimer);
       window.removeEventListener('focus', handleVisibilityOrFocus);
+      window.removeEventListener('storage', handleStorageSync);
       document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
     };
   }, [fetchServerStore, applyServerSnapshot]);
@@ -612,10 +627,13 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Product Management (Admin) -> Optimistic UI + Authoritative Server Sync + Cross-Tab Broadcast
-  const updateProduct = async (updatedProduct: Product) => {
+  const updateProduct = async (updatedProduct: Product): Promise<boolean> => {
     let nextProducts: Product[] = [];
     setProducts(prev => {
-      nextProducts = prev.map(p => (p.id === updatedProduct.id ? updatedProduct : p));
+      const exists = prev.some(p => p.id === updatedProduct.id);
+      nextProducts = exists
+        ? prev.map(p => (p.id === updatedProduct.id ? updatedProduct : p))
+        : [updatedProduct, ...prev];
       return nextProducts;
     });
 
@@ -624,7 +642,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passkey': ADMIN_PASSKEY
+          'x-admin-passkey': getAdminSessionPasskey()
         },
         body: JSON.stringify(updatedProduct)
       });
@@ -639,20 +657,31 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
           'success',
           updatedProduct.image
         );
-        return;
+        return true;
       }
-    } catch {
-      // fallback below
-    }
 
-    broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
-    showToast('Product Updated', `${updatedProduct.name} has been updated.`, 'success', updatedProduct.image);
+      let serverErr = `Server returned HTTP ${res.status}`;
+      try {
+        const errBody = (await res.json()) as { error?: string };
+        if (errBody?.error) serverErr = errBody.error;
+      } catch {
+        // ignore JSON parse error
+      }
+      setServerSynced(false);
+      showToast('Live Sync Warning', `${updatedProduct.name} could not be saved to server (${serverErr}).`, 'warning');
+      return false;
+    } catch {
+      setServerSynced(false);
+      broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
+      showToast('Saved in Browser Only', `Server unreachable — ${updatedProduct.name} updated in this browser only.`, 'warning', updatedProduct.image);
+      return false;
+    }
   };
 
-  const addProduct = async (newProduct: Product) => {
+  const addProduct = async (newProduct: Product): Promise<boolean> => {
     let nextProducts: Product[] = [];
     setProducts(prev => {
-      nextProducts = [newProduct, ...prev];
+      nextProducts = [newProduct, ...prev.filter(p => p.id !== newProduct.id)];
       return nextProducts;
     });
 
@@ -661,7 +690,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passkey': ADMIN_PASSKEY
+          'x-admin-passkey': getAdminSessionPasskey()
         },
         body: JSON.stringify(newProduct)
       });
@@ -671,17 +700,28 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         applyServerSnapshot(data);
         broadcastChannelRef.current?.postMessage({ products: data.products, updatedAt: data.updatedAt });
         showToast('Launched Live to Website', `${newProduct.name} is now live in the storefront catalog.`, 'success', newProduct.image);
-        return;
+        return true;
       }
-    } catch {
-      // fallback below
-    }
 
-    broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
-    showToast('Product Added', `${newProduct.name} has been added to catalog.`, 'success', newProduct.image);
+      let serverErr = `Server returned HTTP ${res.status}`;
+      try {
+        const errBody = (await res.json()) as { error?: string };
+        if (errBody?.error) serverErr = errBody.error;
+      } catch {
+        // ignore
+      }
+      setServerSynced(false);
+      showToast('Live Sync Warning', `${newProduct.name} could not be saved to server (${serverErr}).`, 'warning');
+      return false;
+    } catch {
+      setServerSynced(false);
+      broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
+      showToast('Saved in Browser Only', `Server unreachable — ${newProduct.name} added in this browser only.`, 'warning', newProduct.image);
+      return false;
+    }
   };
 
-  const deleteProduct = async (productId: string) => {
+  const deleteProduct = async (productId: string): Promise<boolean> => {
     const prod = products.find(p => p.id === productId);
     let nextProducts: Product[] = [];
     setProducts(prev => {
@@ -693,7 +733,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const res = await fetch(`/api/products/${encodeURIComponent(productId)}`, {
         method: 'DELETE',
         headers: {
-          'x-admin-passkey': ADMIN_PASSKEY
+          'x-admin-passkey': getAdminSessionPasskey()
         }
       });
 
@@ -702,14 +742,18 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         applyServerSnapshot(data);
         broadcastChannelRef.current?.postMessage({ products: data.products, updatedAt: data.updatedAt });
         showToast('Removed from Live Store', `${prod?.name || 'Product'} removed from live website.`, 'info');
-        return;
+        return true;
       }
-    } catch {
-      // fallback below
-    }
 
-    broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
-    showToast('Product Deleted', `${prod?.name || 'Product'} removed from catalog.`, 'info');
+      setServerSynced(false);
+      showToast('Live Sync Warning', `Could not remove ${prod?.name || 'product'} from server.`, 'warning');
+      return false;
+    } catch {
+      setServerSynced(false);
+      broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
+      showToast('Removed in Browser Only', `Server unreachable — ${prod?.name || 'Product'} removed locally only.`, 'warning');
+      return false;
+    }
   };
 
   // Order & Customer Management (Admin)
@@ -733,7 +777,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'x-admin-passkey': ADMIN_PASSKEY
+        'x-admin-passkey': getAdminSessionPasskey()
       },
       body: JSON.stringify({ status, trackingNumber, note })
     }).catch(() => {
@@ -748,7 +792,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     fetch(`/api/orders/${encodeURIComponent(orderId)}`, {
       method: 'DELETE',
-      headers: { 'x-admin-passkey': ADMIN_PASSKEY }
+      headers: { 'x-admin-passkey': getAdminSessionPasskey() }
     }).catch(() => {
       // ignore if offline
     });
@@ -763,7 +807,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'x-admin-passkey': ADMIN_PASSKEY
+        'x-admin-passkey': getAdminSessionPasskey()
       },
       body: JSON.stringify({ note })
     }).catch(() => {

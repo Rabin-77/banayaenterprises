@@ -5,7 +5,7 @@ import { useShop } from '../context/ShopContext';
 import { ScrollReveal } from './ScrollReveal';
 
 export const ShopByCategory: React.FC = () => {
-  const { setSelectedCategory } = useShop();
+  const { setSelectedCategory, products } = useShop();
 
   const handleCategorySelect = (slug: string) => {
     setSelectedCategory(slug);
@@ -37,6 +37,7 @@ export const ShopByCategory: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {CATEGORIES.map((cat, idx) => {
             const isFeaturedLarge = idx === 0; // highlight the first honey category nicely
+            const liveCount = products.filter(p => p.categorySlug === cat.slug).length;
             return (
               <ScrollReveal
                 key={cat.id}
@@ -61,6 +62,11 @@ export const ShopByCategory: React.FC = () => {
                   {/* Highlight pill */}
                   <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-slate-900 text-[11px] font-bold px-2.5 py-1 rounded-full border border-slate-200 shadow-xs">
                     {cat.highlight}
+                  </div>
+
+                  {/* Live Item Count pill */}
+                  <div className="absolute top-3 right-3 bg-[#064E3B]/90 backdrop-blur-xs text-amber-300 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-700/60 shadow-xs">
+                    {liveCount} {liveCount === 1 ? 'Item' : 'Items'}
                   </div>
 
                   {/* Category Title overlay */}

@@ -27,13 +27,11 @@ export const ProductDetailModal: React.FC = () => {
 
   useEffect(() => {
     if (selectedProduct) {
-      setSelectedWeight(prev =>
-        prev && selectedProduct.weightOptions.includes(prev) ? prev : selectedProduct.defaultWeight
-      );
+      setSelectedWeight(selectedProduct.defaultWeight);
       const galLen = selectedProduct.gallery?.length || 1;
       setActiveImageIdx(prev => (prev >= galLen ? 0 : prev));
     }
-  }, [selectedProduct]);
+  }, [selectedProduct?.id, selectedProduct?.defaultWeight, selectedProduct?.gallery?.length]);
 
   if (activeModal !== 'quickView' || !selectedProduct) return null;
 
