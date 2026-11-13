@@ -163,35 +163,39 @@ export const Hero: React.FC = () => {
               </div>
 
               {/* Floating Element 2: Bottom Left Interactive Product Badge */}
-              <div 
-                onClick={() => openProductDetail(malaiThean)}
-                className="absolute -bottom-5 -left-3 z-20 bg-white/95 border border-slate-200 p-3.5 rounded-2xl shadow-xl flex items-center gap-3.5 cursor-pointer hover:border-emerald-500 transition-all group backdrop-blur-md animate-float-reverse active:scale-95"
-                title="Click to view Malai Thean details"
-              >
-                <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-100 shrink-0 bg-slate-50">
-                  <img
-                    src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=150&q=80"
-                    alt="Malai Thean"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
+              {malaiThean && (
+                <div 
+                  onClick={() => openProductDetail(malaiThean)}
+                  className="absolute -bottom-5 -left-3 z-20 bg-white/95 border border-slate-200 p-3.5 rounded-2xl shadow-xl flex items-center gap-3.5 cursor-pointer hover:border-emerald-500 transition-all group backdrop-blur-md animate-float-reverse active:scale-95"
+                  title={`Click to view ${malaiThean.name} details`}
+                >
+                  <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-100 shrink-0 bg-slate-50">
+                    <img
+                      src={malaiThean.image}
+                      alt={malaiThean.name}
+                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">
+                        {malaiThean.badges?.[0] || 'Wild Forest Honey'}
+                      </span>
+                      <span className="text-xs text-amber-600 font-bold flex items-center">
+                        <Star className="w-3 h-3 fill-amber-400 text-amber-400 inline mr-0.5" /> {malaiThean.rating}
+                      </span>
+                    </div>
+                    <div className="text-xs font-bold text-slate-900 mt-0.5 group-hover:text-emerald-700 transition-colors">
+                      {malaiThean.name}
+                    </div>
+                    <div className="text-[11px] font-semibold text-slate-800">
+                      ₹{malaiThean.price} {malaiThean.originalPrice > malaiThean.price && (
+                        <span className="line-through text-slate-400 font-normal text-[10px]">₹{malaiThean.originalPrice}</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-bold bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">
-                      Wild Forest Honey
-                    </span>
-                    <span className="text-xs text-amber-600 font-bold flex items-center">
-                      <Star className="w-3 h-3 fill-amber-400 text-amber-400 inline mr-0.5" /> 4.95
-                    </span>
-                  </div>
-                  <div className="text-xs font-bold text-slate-900 mt-0.5 group-hover:text-emerald-700 transition-colors">
-                    Malai Thean (Mountain Honey)
-                  </div>
-                  <div className="text-[11px] font-semibold text-slate-800">
-                    ₹{malaiThean.price} <span className="line-through text-slate-400 font-normal text-[10px]">₹{malaiThean.originalPrice}</span>
-                  </div>
-                </div>
-              </div>
+              )}
 
             </div>
 

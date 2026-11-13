@@ -11,6 +11,7 @@ import {
 import { useShop } from '../context/ShopContext';
 import { Product, Order } from '../types';
 import { CATEGORIES } from '../data/categories';
+import { uploadProductImage } from '../utils/imageUpload';
 
 // Official Authentic Sourced Images for Fast Selection (Primary & Secondary Views)
 const PRESET_GALLERY_IMAGES = [
@@ -62,7 +63,8 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
     deleteOrder,
     adminNotes,
     setAdminNotesForOrder,
-    showToast
+    showToast,
+    serverSynced
   } = useShop();
 
   // Authentication State
@@ -93,6 +95,8 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreatingNewProduct, setIsCreatingNewProduct] = useState(false);
   const [productForm, setProductForm] = useState<Partial<Product>>({});
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isSavingProduct, setIsSavingProduct] = useState(false);
 
   // Handle Login
   const handleLogin = (e: React.FormEvent) => {
@@ -219,7 +223,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
     setQuickPrices(prev => ({ ...prev, [prodId]: val }));
   };
 
-  const handleSaveQuickPrice = (prod: Product) => {
+  const handleSaveQuickPrice = async (prod: Product) => {
     const newPrice = quickPrices[prod.id];
     if (newPrice === undefined || newPrice <= 0) return;
     const updated: Product = {
@@ -227,83 +231,84 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
       price: newPrice,
       originalPrice: prod.originalPrice && prod.originalPrice > newPrice ? prod.originalPrice : Math.round(newPrice * 1.25)
     };
-    updateProduct(updated);
+    await updateProduct(updated);
     setQuickPrices(prev => {
       const copy = { ...prev };
       delete copy[prod.id];
       return copy;
     });
-    showToast('Rate Updated', `${prod.name} rate changed to ₹${newPrice}`, 'success', prod.image);
   };
 
   // Active Preview Image Index for the Live Storefront Preview (Primary = 0, Secondary = 1+)
   const [activePreviewIdx, setActivePreviewIdx] = useState(0);
 
-  // Upload Primary Front Image (Cover Photo)
-  const handleUploadPrimaryImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Upload Primary Front Image (Cover Photo) -> Uploads & persists to server
+  const handleUploadPrimaryImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 8 * 1024 * 1024) {
-      showToast('File Too Large', 'Please upload an image smaller than 8MB.', 'warning');
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('File Too Large', 'Please upload an image smaller than 10MB.', 'warning');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      if (base64) {
-        setProductForm(prev => {
-          const prevGallery = prev.gallery && prev.gallery.length > 0 ? [...prev.gallery] : [base64];
-          prevGallery[0] = base64;
-          return {
-            ...prev,
-            image: base64,
-            gallery: prevGallery
-          };
-        });
-        setActivePreviewIdx(0);
-        showToast('Primary Front Image Updated', 'Main product photo updated from device.', 'success', base64);
-      }
-    };
-    reader.readAsDataURL(file);
+    setIsUploadingImage(true);
+    try {
+      const uploadedUrl = await uploadProductImage(file);
+      setProductForm(prev => {
+        const prevGallery = prev.gallery && prev.gallery.length > 0 ? [...prev.gallery] : [uploadedUrl];
+        prevGallery[0] = uploadedUrl;
+        return {
+          ...prev,
+          image: uploadedUrl,
+          gallery: prevGallery
+        };
+      });
+      setActivePreviewIdx(0);
+      showToast('Primary Front Image Uploaded', 'Image saved & ready. Click Save & Update Live Product to publish.', 'success', uploadedUrl);
+    } catch {
+      showToast('Upload Failed', 'Could not process image file. Please try another photo.', 'warning');
+    } finally {
+      setIsUploadingImage(false);
+    }
   };
 
   // Upload Secondary Image (Side Phase, Back Packaging, Nutritional Label, Texture)
-  const handleUploadSecondaryImage = (slotIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadSecondaryImage = async (slotIndex: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 8 * 1024 * 1024) {
-      showToast('File Too Large', 'Please upload an image smaller than 8MB.', 'warning');
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('File Too Large', 'Please upload an image smaller than 10MB.', 'warning');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      if (base64) {
-        setProductForm(prev => {
-          const currentPrimary = prev.image || prev.gallery?.[0] || '/images/banaya_honey.jpg';
-          const prevGallery = [...(prev.gallery && prev.gallery.length > 0 ? prev.gallery : [currentPrimary])];
-          const targetIndex = slotIndex + 1; // 0 is primary, 1+ are secondary
+    setIsUploadingImage(true);
+    try {
+      const uploadedUrl = await uploadProductImage(file);
+      setProductForm(prev => {
+        const currentPrimary = prev.image || prev.gallery?.[0] || '/images/banaya_honey.jpg';
+        const prevGallery = [...(prev.gallery && prev.gallery.length > 0 ? prev.gallery : [currentPrimary])];
+        const targetIndex = slotIndex + 1;
 
-          if (targetIndex < prevGallery.length) {
-            prevGallery[targetIndex] = base64;
-          } else {
-            prevGallery.push(base64);
-          }
+        if (targetIndex < prevGallery.length) {
+          prevGallery[targetIndex] = uploadedUrl;
+        } else {
+          prevGallery.push(uploadedUrl);
+        }
 
-          return {
-            ...prev,
-            gallery: prevGallery
-          };
-        });
-        setActivePreviewIdx(slotIndex + 1);
-        showToast(`Secondary Image #${slotIndex + 1} Updated`, 'Side phase / secondary view updated.', 'success', base64);
-      }
-    };
-    reader.readAsDataURL(file);
+        return {
+          ...prev,
+          gallery: prevGallery
+        };
+      });
+      setActivePreviewIdx(slotIndex + 1);
+      showToast(`Secondary Image #${slotIndex + 1} Uploaded`, 'Side phase photo uploaded. Save product to publish live.', 'success', uploadedUrl);
+    } catch {
+      showToast('Upload Failed', 'Could not process image file. Please try another photo.', 'warning');
+    } finally {
+      setIsUploadingImage(false);
+    }
   };
 
   // Add New Secondary Image Slot (Side Phase or Angle)
@@ -414,7 +419,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   };
 
   // Save Product (Edit or Create)
-  const handleSaveProduct = (e: React.FormEvent) => {
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!productForm.name || !productForm.price) {
       showToast('Validation Error', 'Product Name and Customer Price are required.', 'warning');
@@ -457,17 +462,19 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
       isNew: !!productForm.isNew
     };
 
-    if (isCreatingNewProduct) {
-      addProduct(compiledProduct);
-      showToast('Product Added', `${compiledProduct.name} is now live in the store!`, 'success', compiledProduct.image);
-    } else {
-      updateProduct(compiledProduct);
-      showToast('Product Updated', `${compiledProduct.name} details have been updated.`, 'success', compiledProduct.image);
+    setIsSavingProduct(true);
+    try {
+      if (isCreatingNewProduct) {
+        await addProduct(compiledProduct);
+      } else {
+        await updateProduct(compiledProduct);
+      }
+      setEditingProduct(null);
+      setIsCreatingNewProduct(false);
+      setProductForm({});
+    } finally {
+      setIsSavingProduct(false);
     }
-
-    setEditingProduct(null);
-    setIsCreatingNewProduct(false);
-    setProductForm({});
   };
 
   // Format currency
@@ -508,6 +515,18 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
           </div>
 
           <div className="flex items-center gap-2">
+            {isAuthenticated && (
+              <span
+                className={`hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border ${
+                  serverSynced
+                    ? 'bg-emerald-800/80 text-emerald-100 border-emerald-500/60'
+                    : 'bg-amber-900/60 text-amber-200 border-amber-500/50'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full ${serverSynced ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                <span>{serverSynced ? 'Live Store Sync Active' : 'Local Mode'}</span>
+              </span>
+            )}
             {isAuthenticated && (
               <button
                 onClick={handleLogout}
@@ -2296,10 +2315,19 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
 
                   <button
                     type="submit"
-                    className="px-7 py-3 bg-[#064E3B] hover:bg-[#047857] text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg hover:shadow-xl cursor-pointer flex items-center gap-2 transition-all duration-200 hover:scale-102"
+                    disabled={isSavingProduct || isUploadingImage}
+                    className="px-7 py-3 bg-[#064E3B] hover:bg-[#047857] disabled:opacity-60 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg hover:shadow-xl cursor-pointer flex items-center gap-2 transition-all duration-200 hover:scale-102"
                   >
                     <Save className="w-4 h-4 text-amber-300" />
-                    <span>{isCreatingNewProduct ? 'Save & Launch New Product' : 'Save & Update Live Product'}</span>
+                    <span>
+                      {isUploadingImage
+                        ? 'Uploading Photo...'
+                        : isSavingProduct
+                          ? 'Syncing to Live Website...'
+                          : isCreatingNewProduct
+                            ? 'Save & Launch New Product'
+                            : 'Save & Update Live Product'}
+                    </span>
                   </button>
                 </div>
               </form>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, Star, ShoppingBag, Eye, Zap, Check } from 'lucide-react';
 import { Product } from '../types';
 import { useShop } from '../context/ShopContext';
@@ -13,10 +13,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [selectedWeight, setSelectedWeight] = useState<string>(product.defaultWeight);
   const [isAddedAnim, setIsAddedAnim] = useState(false);
 
+  useEffect(() => {
+    if (!product.weightOptions.includes(selectedWeight)) {
+      setSelectedWeight(product.defaultWeight);
+    }
+  }, [product.defaultWeight, product.weightOptions, selectedWeight]);
+
   const inWishlist = isInWishlist(product.id);
 
   const currentPrices = getPriceForProductWeight(product, selectedWeight);
-  const discountPercent = Math.round(((currentPrices.original - currentPrices.price) / currentPrices.original) * 100);
+  const discountPercent =
+    currentPrices.original > currentPrices.price
+      ? Math.round(((currentPrices.original - currentPrices.price) / currentPrices.original) * 100)
+      : 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -49,7 +58,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className={`w-full h-full transition-transform duration-700 ease-out ${
             product.image.includes('rose_gulkand')
               ? 'object-cover object-center group-hover:scale-108'
-              : product.image.startsWith('/images/') || product.image.startsWith('/assets/')
+              : product.image.startsWith('/images/') ||
+                  product.image.startsWith('/assets/') ||
+                  product.image.startsWith('/uploads/') ||
+                  product.image.startsWith('data:image/')
                 ? 'object-contain p-3 group-hover:scale-108'
                 : 'object-cover object-center group-hover:scale-108'
           }`}
@@ -162,12 +174,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <span className="text-xl font-bold text-slate-950 font-heading">
               ₹{currentPrices.price}
             </span>
-            <span className="text-xs text-slate-400 line-through font-normal">
-              ₹{currentPrices.original}
-            </span>
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
-              {discountPercent}% OFF
-            </span>
+            {currentPrices.original > currentPrices.price && (
+              <>
+                <span className="text-xs text-slate-400 line-through font-normal">
+                  ₹{currentPrices.original}
+                </span>
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                  {discountPercent}% OFF
+                </span>
+              </>
+            )}
           </div>
 
           {/* Action Buttons: Add to Cart & Buy Now */}

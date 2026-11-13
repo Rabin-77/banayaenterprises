@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, Star, Heart, ShoppingBag, Zap, ShieldCheck, CheckCircle2, 
   Sparkles, Award, RotateCcw, Truck, Leaf, ChevronLeft, ChevronRight,
@@ -27,6 +27,16 @@ export const ProductDetailModal: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<'benefits' | 'ingredients' | 'usage' | 'reviews'>('benefits');
 
+  useEffect(() => {
+    if (selectedProduct) {
+      setSelectedWeight(prev =>
+        prev && selectedProduct.weightOptions.includes(prev) ? prev : selectedProduct.defaultWeight
+      );
+      const galLen = selectedProduct.gallery?.length || 1;
+      setActiveImageIdx(prev => (prev >= galLen ? 0 : prev));
+    }
+  }, [selectedProduct]);
+
   if (activeModal !== 'quickView' || !selectedProduct) return null;
 
   const currentWeight = selectedWeight || selectedProduct.defaultWeight;
@@ -34,7 +44,10 @@ export const ProductDetailModal: React.FC = () => {
 
   // Pricing calculations
   const currentPrices = getPriceForProductWeight(selectedProduct, currentWeight);
-  const discountPercent = Math.round(((currentPrices.original - currentPrices.price) / currentPrices.original) * 100);
+  const discountPercent =
+    currentPrices.original > currentPrices.price
+      ? Math.round(((currentPrices.original - currentPrices.price) / currentPrices.original) * 100)
+      : 0;
 
   const images = selectedProduct.gallery && selectedProduct.gallery.length > 0
     ? selectedProduct.gallery
@@ -100,7 +113,9 @@ export const ProductDetailModal: React.FC = () => {
                     (images[activeImageIdx] || selectedProduct.image).includes('infographic') ||
                     (images[activeImageIdx] || selectedProduct.image).includes('poster') ||
                     (images[activeImageIdx] || selectedProduct.image).startsWith('/images/') ||
-                    (images[activeImageIdx] || selectedProduct.image).startsWith('/assets/')
+                    (images[activeImageIdx] || selectedProduct.image).startsWith('/assets/') ||
+                    (images[activeImageIdx] || selectedProduct.image).startsWith('/uploads/') ||
+                    (images[activeImageIdx] || selectedProduct.image).startsWith('data:image/')
                       ? 'object-contain group-hover:scale-105'
                       : 'object-cover object-center group-hover:scale-105'
                   }`}
@@ -152,7 +167,7 @@ export const ProductDetailModal: React.FC = () => {
                         src={img} 
                         alt={`Thumbnail ${idx + 1}`} 
                         className={`w-full h-full ${
-                          img.includes('banaya') || img.includes('honey_web') || img.includes('mudavatukal') || img.includes('IMG2026') || img.includes('pouch') || img.includes('infographic') || img.includes('poster') || img.startsWith('/images/') || img.startsWith('/assets/')
+                          img.includes('banaya') || img.includes('honey_web') || img.includes('mudavatukal') || img.includes('IMG2026') || img.includes('pouch') || img.includes('infographic') || img.includes('poster') || img.startsWith('/images/') || img.startsWith('/assets/') || img.startsWith('/uploads/') || img.startsWith('data:image/')
                             ? 'object-contain p-1'
                             : 'object-cover'
                         }`} 
@@ -238,12 +253,16 @@ export const ProductDetailModal: React.FC = () => {
                       <span className="text-2xl sm:text-3xl font-extrabold text-slate-950">
                         ₹{currentPrices.price}
                       </span>
-                      <span className="text-sm text-slate-400 line-through">
-                        ₹{currentPrices.original}
-                      </span>
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded">
-                        Save {discountPercent}%
-                      </span>
+                      {currentPrices.original > currentPrices.price && (
+                        <>
+                          <span className="text-sm text-slate-400 line-through">
+                            ₹{currentPrices.original}
+                          </span>
+                          <span className="text-xs font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded">
+                            Save {discountPercent}%
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="text-right text-[11px] text-slate-500">

@@ -1,7 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Product, CartItem, Order, ActiveModal } from '../types';
 import { PRODUCTS } from '../data/products';
 import { getPriceForProductWeight } from '../utils/pricing';
+
+const ADMIN_PASSKEY = 'banayana00123';
+const SYNC_CHANNEL_NAME = 'banaya_store_sync';
 
 interface ToastMessage {
   id: string;
@@ -9,6 +12,13 @@ interface ToastMessage {
   title: string;
   message: string;
   productImage?: string;
+}
+
+interface StoreSyncPayload {
+  products?: Product[];
+  orders?: Order[];
+  adminNotes?: Record<string, string>;
+  updatedAt?: number;
 }
 
 interface ShopContextType {
@@ -23,14 +33,16 @@ interface ShopContextType {
   sortBy: string;
   toasts: ToastMessage[];
   appliedCoupon: { code: string; discountPercent: number; discountFixed: number } | null;
-  
+  serverSynced: boolean;
+  lastSyncedAt: number | null;
+
   // Actions
   setActiveModal: (modal: ActiveModal) => void;
   setSelectedProduct: (product: Product | null) => void;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string) => void;
   setSortBy: (sort: string) => void;
-  
+
   // Cart Actions
   addToCart: (product: Product, quantity?: number, weight?: string) => void;
   removeFromCart: (productId: string, weight: string) => void;
@@ -38,11 +50,11 @@ interface ShopContextType {
   clearCart: () => void;
   applyCoupon: (code: string) => { success: boolean; message: string };
   removeCoupon: () => void;
-  
+
   // Wishlist Actions
   toggleWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
-  
+
   // Order Actions
   placeOrder: (orderDetails: {
     customerName: string;
@@ -56,26 +68,26 @@ interface ShopContextType {
     bankRef?: string;
   }) => Order;
   trackOrderById: (orderId: string) => Order | null;
-  
+
   // Toast
   showToast: (title: string, message: string, type?: 'success' | 'info' | 'warning', productImage?: string) => void;
   dismissToast: (id: string) => void;
-  
+
   // Quick View / Detail Navigation
   openProductDetail: (product: Product) => void;
   openQuickCheckout: (product: Product, weight?: string) => void;
-  
+
   // Product Management (Admin)
-  updateProduct: (updatedProduct: Product) => void;
-  addProduct: (newProduct: Product) => void;
-  deleteProduct: (productId: string) => void;
-  
+  updateProduct: (updatedProduct: Product) => Promise<void>;
+  addProduct: (newProduct: Product) => Promise<void>;
+  deleteProduct: (productId: string) => Promise<void>;
+
   // Order & Customer Management (Admin)
   updateOrderStatus: (orderId: string, status: Order['status'], trackingNumber?: string, adminNotes?: string) => void;
   deleteOrder: (orderId: string) => void;
   adminNotes?: Record<string, string>;
   setAdminNotesForOrder: (orderId: string, note: string) => void;
-  
+
   // Financial Calculations
   getEffectivePrice: (item: CartItem) => number;
   cartCount: number;
@@ -90,22 +102,31 @@ interface ShopContextType {
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Persistence for Products (allowing admin updates to price, stock, details)
+  // Initial catalog state (quickly hydrated by server /api/store on mount)
   const [products, setProducts] = useState<Product[]>(() => {
     try {
       const saved = localStorage.getItem('banaya_products');
-      if (saved) return JSON.parse(saved);
-    } catch {}
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch {
+      // ignore localStorage read issues
+    }
     return PRODUCTS;
   });
 
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProductState, setSelectedProductState] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('featured');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPercent: number; discountFixed: number } | null>(null);
+  const [serverSynced, setServerSynced] = useState<boolean>(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+
+  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
 
   // Persistence for Cart
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -135,14 +156,13 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
       // ignore
     }
-    // Seed diverse sample orders representing authentic customers for admin review
     return [
       {
         id: 'STM-84920',
         date: '2026-11-10',
         items: [
-          { product: PRODUCTS[2], quantity: 1, selectedWeight: '500g' }, // Malai Thean
-          { product: PRODUCTS[5], quantity: 2, selectedWeight: '100g' }  // ABC Malt
+          { product: PRODUCTS[2], quantity: 1, selectedWeight: '500g' },
+          { product: PRODUCTS[6] || PRODUCTS[5], quantity: 2, selectedWeight: '100g' }
         ],
         subtotal: 1700,
         discount: 170,
@@ -162,8 +182,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: 'STM-85104',
         date: '2026-11-11',
         items: [
-          { product: PRODUCTS[0], quantity: 2, selectedWeight: '500g' }, // Wildflower Honey
-          { product: PRODUCTS[3], quantity: 1, selectedWeight: '250g' }  // Rose Gulkand
+          { product: PRODUCTS[0], quantity: 2, selectedWeight: '500g' },
+          { product: PRODUCTS[3], quantity: 1, selectedWeight: '250g' }
         ],
         subtotal: 750,
         discount: 0,
@@ -183,8 +203,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: 'STM-85219',
         date: '2026-11-11',
         items: [
-          { product: PRODUCTS[7], quantity: 3, selectedWeight: '100g' }, // Mudavatukkal Soup Mix
-          { product: PRODUCTS[8], quantity: 2, selectedWeight: '250g' }  // Karuppukavani Kanji
+          { product: PRODUCTS[8] || PRODUCTS[7], quantity: 3, selectedWeight: '100g' },
+          { product: PRODUCTS[9] || PRODUCTS[8], quantity: 2, selectedWeight: '250g' }
         ],
         subtotal: 1240,
         discount: 100,
@@ -217,35 +237,154 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   });
 
+  const applyServerSnapshot = useCallback((payload: StoreSyncPayload) => {
+    if (Array.isArray(payload.products) && payload.products.length > 0) {
+      setProducts(payload.products);
+    }
+    if (Array.isArray(payload.orders)) {
+      setOrders(payload.orders);
+    }
+    if (payload.adminNotes && typeof payload.adminNotes === 'object') {
+      setAdminNotes(payload.adminNotes);
+    }
+    setServerSynced(true);
+    setLastSyncedAt(payload.updatedAt || Date.now());
+  }, []);
+
+  const fetchServerStore = useCallback(async () => {
+    try {
+      const response = await fetch('/api/store', { cache: 'no-store' });
+      if (response.ok) {
+        const data = (await response.json()) as StoreSyncPayload;
+        applyServerSnapshot(data);
+      }
+    } catch {
+      // Server offline / static mode fallback
+    }
+  }, [applyServerSnapshot]);
+
+  // Initial server hydration + real-time SSE + cross-tab BroadcastChannel sync
+  useEffect(() => {
+    fetchServerStore();
+
+    if (typeof BroadcastChannel !== 'undefined') {
+      const channel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+      broadcastChannelRef.current = channel;
+      channel.onmessage = (event: MessageEvent<StoreSyncPayload>) => {
+        if (event.data) {
+          applyServerSnapshot(event.data);
+        }
+      };
+    }
+
+    let eventSource: EventSource | null = null;
+    if (typeof EventSource !== 'undefined') {
+      eventSource = new EventSource('/api/events');
+      eventSource.addEventListener('connected', () => {
+        setServerSynced(true);
+      });
+      eventSource.addEventListener('store-update', (event: MessageEvent) => {
+        try {
+          const parsed = JSON.parse(event.data) as StoreSyncPayload;
+          applyServerSnapshot(parsed);
+        } catch {
+          // ignore malformed SSE chunk
+        }
+      });
+      eventSource.onerror = () => {
+        setServerSynced(false);
+      };
+    }
+
+    const handleVisibilityOrFocus = () => {
+      if (document.visibilityState === 'visible') {
+        fetchServerStore();
+      }
+    };
+
+    window.addEventListener('focus', handleVisibilityOrFocus);
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+
+    return () => {
+      eventSource?.close();
+      broadcastChannelRef.current?.close();
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+    };
+  }, [fetchServerStore, applyServerSnapshot]);
+
+  // Local cache fallback (never crashes if quota exceeded)
   useEffect(() => {
     try {
       localStorage.setItem('banaya_products', JSON.stringify(products));
-    } catch {}
+    } catch {
+      // Ignore quota errors cleanly since server holds authoritative catalog
+    }
   }, [products]);
 
   useEffect(() => {
     try {
       localStorage.setItem('banaya_admin_notes', JSON.stringify(adminNotes));
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [adminNotes]);
 
   useEffect(() => {
     try {
       localStorage.setItem('startone_cart', JSON.stringify(cart));
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [cart]);
 
   useEffect(() => {
     try {
       localStorage.setItem('startone_wishlist', JSON.stringify(wishlist));
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [wishlist]);
 
   useEffect(() => {
     try {
       localStorage.setItem('startone_orders', JSON.stringify(orders));
-    } catch {}
+    } catch {
+      // ignore
+    }
   }, [orders]);
+
+  // Keep cart item product snapshots synchronized whenever admin edits prices/images
+  useEffect(() => {
+    setCart((prevCart) => {
+      let changed = false;
+      const nextCart = prevCart.map((item) => {
+        const latest = products.find((p) => p.id === item.product.id);
+        if (
+          latest &&
+          (latest.price !== item.product.price ||
+            latest.originalPrice !== item.product.originalPrice ||
+            latest.image !== item.product.image ||
+            latest.name !== item.product.name)
+        ) {
+          changed = true;
+          return { ...item, product: latest };
+        }
+        return item;
+      });
+      return changed ? nextCart : prevCart;
+    });
+  }, [products]);
+
+  // Always derive selectedProduct from latest products array so edits update open/reopened detail views automatically
+  const selectedProduct = useMemo(() => {
+    if (!selectedProductState) return null;
+    return products.find((p) => p.id === selectedProductState.id) || selectedProductState;
+  }, [selectedProductState, products]);
+
+  const setSelectedProduct = (product: Product | null) => {
+    setSelectedProductState(product);
+  };
 
   const showToast = (title: string, message: string, type: 'success' | 'info' | 'warning' = 'success', productImage?: string) => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -346,7 +485,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const openProductDetail = (product: Product) => {
-    setSelectedProduct(product);
+    setSelectedProductState(product);
     setActiveModal('quickView');
   };
 
@@ -359,7 +498,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const getEffectivePrice = (item: CartItem) => {
-    return getPriceForProductWeight(item.product, item.selectedWeight).price;
+    const latest = products.find(p => p.id === item.product.id) || item.product;
+    return getPriceForProductWeight(latest, item.selectedWeight).price;
   };
 
   const cartSubtotal = cart.reduce((sum, item) => sum + getEffectivePrice(item) * item.quantity, 0);
@@ -396,7 +536,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const trackingCode = `BNY${Math.floor(10000000 + Math.random() * 90000000)}IN`;
     const txnId = details.transactionId || `TXN-BNY-${Date.now().toString().slice(-6)}`;
     const bankRef = details.bankRef || `SBI${Math.floor(100000000000 + Math.random() * 900000000000)}`;
-    
+
     const newOrder: Order = {
       id: `BNY-${orderNumber}`,
       date: new Date().toISOString().split('T')[0],
@@ -421,6 +561,16 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setOrders(prev => [newOrder, ...prev]);
     clearCart();
     setAppliedCoupon(null);
+
+    // Sync new order to live server store
+    fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newOrder)
+    }).catch(() => {
+      // ignore if offline
+    });
+
     return newOrder;
   };
 
@@ -429,20 +579,104 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return orders.find(o => o.id.toUpperCase() === cleanId || o.trackingNumber.toUpperCase() === cleanId) || null;
   };
 
-  // Product Management (Admin)
-  const updateProduct = (updatedProduct: Product) => {
-    setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
-    showToast('Product Updated', `${updatedProduct.name} has been updated successfully.`, 'success');
+  // Product Management (Admin) -> Optimistic UI + Authoritative Server Sync + Cross-Tab Broadcast
+  const updateProduct = async (updatedProduct: Product) => {
+    let nextProducts: Product[] = [];
+    setProducts(prev => {
+      nextProducts = prev.map(p => (p.id === updatedProduct.id ? updatedProduct : p));
+      return nextProducts;
+    });
+
+    try {
+      const res = await fetch(`/api/products/${encodeURIComponent(updatedProduct.id)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-passkey': ADMIN_PASSKEY
+        },
+        body: JSON.stringify(updatedProduct)
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as StoreSyncPayload;
+        applyServerSnapshot(data);
+        broadcastChannelRef.current?.postMessage({ products: data.products, updatedAt: data.updatedAt });
+        showToast(
+          'Synced Live to Website',
+          `${updatedProduct.name} (₹${updatedProduct.price}) is now live across the store.`,
+          'success',
+          updatedProduct.image
+        );
+        return;
+      }
+    } catch {
+      // fallback below
+    }
+
+    broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
+    showToast('Product Updated', `${updatedProduct.name} has been updated.`, 'success', updatedProduct.image);
   };
 
-  const addProduct = (newProduct: Product) => {
-    setProducts(prev => [newProduct, ...prev]);
-    showToast('Product Added', `${newProduct.name} has been added to catalog.`, 'success');
+  const addProduct = async (newProduct: Product) => {
+    let nextProducts: Product[] = [];
+    setProducts(prev => {
+      nextProducts = [newProduct, ...prev];
+      return nextProducts;
+    });
+
+    try {
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-passkey': ADMIN_PASSKEY
+        },
+        body: JSON.stringify(newProduct)
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as StoreSyncPayload;
+        applyServerSnapshot(data);
+        broadcastChannelRef.current?.postMessage({ products: data.products, updatedAt: data.updatedAt });
+        showToast('Launched Live to Website', `${newProduct.name} is now live in the storefront catalog.`, 'success', newProduct.image);
+        return;
+      }
+    } catch {
+      // fallback below
+    }
+
+    broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
+    showToast('Product Added', `${newProduct.name} has been added to catalog.`, 'success', newProduct.image);
   };
 
-  const deleteProduct = (productId: string) => {
+  const deleteProduct = async (productId: string) => {
     const prod = products.find(p => p.id === productId);
-    setProducts(prev => prev.filter(p => p.id !== productId));
+    let nextProducts: Product[] = [];
+    setProducts(prev => {
+      nextProducts = prev.filter(p => p.id !== productId);
+      return nextProducts;
+    });
+
+    try {
+      const res = await fetch(`/api/products/${encodeURIComponent(productId)}`, {
+        method: 'DELETE',
+        headers: {
+          'x-admin-passkey': ADMIN_PASSKEY
+        }
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as StoreSyncPayload;
+        applyServerSnapshot(data);
+        broadcastChannelRef.current?.postMessage({ products: data.products, updatedAt: data.updatedAt });
+        showToast('Removed from Live Store', `${prod?.name || 'Product'} removed from live website.`, 'info');
+        return;
+      }
+    } catch {
+      // fallback below
+    }
+
+    broadcastChannelRef.current?.postMessage({ products: nextProducts, updatedAt: Date.now() });
     showToast('Product Deleted', `${prod?.name || 'Product'} removed from catalog.`, 'info');
   };
 
@@ -463,16 +697,46 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAdminNotes(prev => ({ ...prev, [orderId]: note }));
     }
 
+    fetch(`/api/orders/${encodeURIComponent(orderId)}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-passkey': ADMIN_PASSKEY
+      },
+      body: JSON.stringify({ status, trackingNumber, note })
+    }).catch(() => {
+      // ignore if offline
+    });
+
     showToast('Order Updated', `Order ${orderId} updated to status "${status}".`, 'success');
   };
 
   const deleteOrder = (orderId: string) => {
     setOrders(prev => prev.filter(o => o.id !== orderId));
+
+    fetch(`/api/orders/${encodeURIComponent(orderId)}`, {
+      method: 'DELETE',
+      headers: { 'x-admin-passkey': ADMIN_PASSKEY }
+    }).catch(() => {
+      // ignore if offline
+    });
+
     showToast('Order Removed', `Order ${orderId} deleted from records.`, 'info');
   };
 
   const setAdminNotesForOrder = (orderId: string, note: string) => {
     setAdminNotes(prev => ({ ...prev, [orderId]: note }));
+
+    fetch(`/api/admin-notes/${encodeURIComponent(orderId)}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-passkey': ADMIN_PASSKEY
+      },
+      body: JSON.stringify({ note })
+    }).catch(() => {
+      // ignore if offline
+    });
   };
 
   return (
@@ -489,6 +753,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         sortBy,
         toasts,
         appliedCoupon,
+        serverSynced,
+        lastSyncedAt,
         setActiveModal,
         setSelectedProduct,
         setSearchQuery,
