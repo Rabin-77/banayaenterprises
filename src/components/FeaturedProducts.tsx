@@ -66,8 +66,8 @@ export const FeaturedProducts: React.FC = () => {
   }, [products, selectedCategory, searchQuery, sortBy]);
 
   return (
-    <section id="shop-products" className="py-16 lg:py-24 bg-slate-50/60 border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="shop-products" className="py-12 sm:py-16 lg:py-24 bg-slate-50/60 border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <ScrollReveal distance={24} className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
@@ -85,9 +85,9 @@ export const FeaturedProducts: React.FC = () => {
           </div>
 
           {/* Quick Search & Sort Bar */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
             {/* Search Input */}
-            <div className="relative min-w-[220px] flex-1 sm:flex-initial">
+            <div className="relative w-full sm:w-auto sm:min-w-[220px] flex-1 sm:flex-initial">
               <input
                 id="catalog-search-input"
                 type="text"
@@ -126,13 +126,13 @@ export const FeaturedProducts: React.FC = () => {
         </ScrollReveal>
 
         {/* Category Filter Tabs Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none no-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-5 sm:mb-8 scrollbar-none no-scrollbar">
           {filterTabs.map((tab) => (
             <button
               key={tab.slug}
               id={`filter-tab-${tab.slug}`}
               onClick={() => setSelectedCategory(tab.slug)}
-              className={`shrink-0 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+              className={`shrink-0 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-1.5 sm:gap-2 ${
                 selectedCategory === tab.slug
                   ? 'bg-[#064E3B] text-white shadow-xs'
                   : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/80 shadow-2xs'
@@ -174,7 +174,7 @@ export const FeaturedProducts: React.FC = () => {
 
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
             {filteredProducts.map((product, idx) => (
               <ScrollReveal key={product.id} delay={(idx % 4) * 0.07} distance={24} amount={0.08}>
                 <ProductCard product={product} />

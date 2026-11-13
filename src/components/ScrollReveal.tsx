@@ -118,11 +118,11 @@ export const ScrollToTopButton: React.FC = () => {
           exit={{ opacity: 0, scale: 0.8, y: 16 }}
           transition={{ duration: 0.25, ease: SMOOTH_EASE }}
           onClick={handleScrollTop}
-          className="fixed bottom-6 left-6 z-40 w-11 h-11 rounded-full bg-[#064E3B] hover:bg-[#047857] text-white shadow-lg hover:shadow-xl border border-emerald-700/60 flex items-center justify-center cursor-pointer transition-colors"
+          className="fixed bottom-4 left-3.5 sm:bottom-6 sm:left-6 z-40 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#064E3B] hover:bg-[#047857] text-white shadow-lg hover:shadow-xl border border-emerald-700/60 flex items-center justify-center cursor-pointer transition-colors"
           aria-label="Scroll back to top"
           title="Back to top"
         >
-          <ArrowUp className="w-5 h-5 text-amber-300" />
+          <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5 text-amber-300" />
         </motion.button>
       )}
     </AnimatePresence>

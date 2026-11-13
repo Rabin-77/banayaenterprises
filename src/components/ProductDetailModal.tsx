@@ -7,6 +7,7 @@ import {
 import { useShop } from '../context/ShopContext';
 import { getProductBookingWhatsAppUrl, openWhatsAppUrl } from '../utils/whatsapp';
 import { getPriceForProductWeight } from '../utils/pricing';
+import { handleProductImageError, isLocalAssetImage } from '../utils/imageFallback';
 
 export const ProductDetailModal: React.FC = () => {
   const { 
@@ -103,6 +104,7 @@ export const ProductDetailModal: React.FC = () => {
                 <img
                   src={images[activeImageIdx] || selectedProduct.image}
                   alt={selectedProduct.name}
+                  onError={(e) => handleProductImageError(e, selectedProduct)}
                   className={`w-full h-full transition-transform duration-500 ${
                     (images[activeImageIdx] || selectedProduct.image).includes('banaya') ||
                     (images[activeImageIdx] || selectedProduct.image).includes('honey_web') ||
@@ -111,10 +113,7 @@ export const ProductDetailModal: React.FC = () => {
                     (images[activeImageIdx] || selectedProduct.image).includes('pouch') ||
                     (images[activeImageIdx] || selectedProduct.image).includes('infographic') ||
                     (images[activeImageIdx] || selectedProduct.image).includes('poster') ||
-                    (images[activeImageIdx] || selectedProduct.image).startsWith('/images/') ||
-                    (images[activeImageIdx] || selectedProduct.image).startsWith('/assets/') ||
-                    (images[activeImageIdx] || selectedProduct.image).startsWith('/uploads/') ||
-                    (images[activeImageIdx] || selectedProduct.image).startsWith('data:image/')
+                    isLocalAssetImage(images[activeImageIdx] || selectedProduct.image)
                       ? 'object-contain group-hover:scale-105'
                       : 'object-cover object-center group-hover:scale-105'
                   }`}
@@ -165,8 +164,9 @@ export const ProductDetailModal: React.FC = () => {
                       <img 
                         src={img} 
                         alt={`Thumbnail ${idx + 1}`} 
+                        onError={(e) => handleProductImageError(e, selectedProduct)}
                         className={`w-full h-full ${
-                          img.includes('banaya') || img.includes('honey_web') || img.includes('mudavatukal') || img.includes('IMG2026') || img.includes('pouch') || img.includes('infographic') || img.includes('poster') || img.startsWith('/images/') || img.startsWith('/assets/') || img.startsWith('/uploads/') || img.startsWith('data:image/')
+                          img.includes('banaya') || img.includes('honey_web') || img.includes('mudavatukal') || img.includes('IMG2026') || img.includes('pouch') || img.includes('infographic') || img.includes('poster') || isLocalAssetImage(img)
                             ? 'object-contain p-1'
                             : 'object-cover'
                         }`} 
@@ -502,11 +502,9 @@ export const ProductDetailModal: React.FC = () => {
                     <img
                       src={relProduct.image}
                       alt={relProduct.name}
+                      onError={(e) => handleProductImageError(e, relProduct)}
                       className={`w-16 h-16 rounded-xl group-hover:scale-105 transition-transform bg-slate-50 ${
-                        relProduct.image.startsWith('/images/') ||
-                        relProduct.image.startsWith('/assets/') ||
-                        relProduct.image.startsWith('/uploads/') ||
-                        relProduct.image.startsWith('data:image/')
+                        isLocalAssetImage(relProduct.image)
                           ? 'object-contain p-1'
                           : 'object-cover'
                       }`}

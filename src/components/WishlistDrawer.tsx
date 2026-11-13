@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Heart, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import { handleProductImageError, isLocalAssetImage } from '../utils/imageFallback';
 
 export const WishlistDrawer: React.FC = () => {
   const { 
@@ -78,11 +79,9 @@ export const WishlistDrawer: React.FC = () => {
                   src={product.image}
                   alt={product.name}
                   onClick={() => openProductDetail(product)}
+                  onError={(e) => handleProductImageError(e, product)}
                   className={`w-16 h-16 rounded-xl border border-slate-200 shrink-0 cursor-pointer bg-slate-50 ${
-                    product.image.startsWith('/images/') ||
-                    product.image.startsWith('/assets/') ||
-                    product.image.startsWith('/uploads/') ||
-                    product.image.startsWith('data:image/')
+                    isLocalAssetImage(product.image)
                       ? 'object-contain p-1'
                       : 'object-cover'
                   }`}

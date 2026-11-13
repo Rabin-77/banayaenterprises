@@ -7,10 +7,10 @@ export const FloatingWhatsApp: React.FC = () => {
   const whatsappUrl = 'https://wa.me/918838598172?text=Hello%20Banayana%20Enterprise%2C%20I%20would%20like%20to%20know%20more%20about%20your%20natural%20products.';
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+    <div className="fixed bottom-4 right-3.5 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2">
       {/* Popover Bubble */}
       {isOpen && (
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 w-72 mb-2 animate-slideUp">
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 w-72 max-w-[calc(100vw-2rem)] mb-2 animate-slideUp">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center">

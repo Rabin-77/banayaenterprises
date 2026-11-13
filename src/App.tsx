@@ -45,7 +45,7 @@ function AppContent() {
   }, [activeModal, setActiveModal]);
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#242A26] flex flex-col font-sans selection:bg-[#243D2F] selection:text-[#FAF7F2]">
+    <div className="min-h-screen w-full overflow-x-clip bg-[#FAF7F2] text-[#242A26] flex flex-col font-sans selection:bg-[#243D2F] selection:text-[#FAF7F2]">
       {/* Scroll Progress Indicator */}
       <ScrollProgressBar />
 
@@ -56,7 +56,7 @@ function AppContent() {
       <Header />
 
       {/* Main Content Sections */}
-      <main className="flex-1">
+      <main className="flex-1 w-full overflow-x-clip">
         {/* 1. Hero Section */}
         <Hero />
 

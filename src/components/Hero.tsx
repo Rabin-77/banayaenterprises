@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { Sparkles, ArrowRight, Award, CheckCircle2, Star, Flame } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { useShop } from '../context/ShopContext';
+import { handleProductImageError } from '../utils/imageFallback';
 
 export const Hero: React.FC = () => {
   const { openProductDetail, products } = useShop();
@@ -152,13 +153,13 @@ export const Hero: React.FC = () => {
               </div>
 
               {/* Floating Element 1: Top Right Pill */}
-              <div className="absolute -top-4 -right-3 z-20 bg-white/95 border border-slate-200 p-3 rounded-2xl shadow-lg flex items-center gap-3 backdrop-blur-md animate-float-slow">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">
-                  <Award className="w-5 h-5 text-emerald-700" />
+              <div className="absolute -top-3 right-2 sm:-top-4 sm:-right-3 z-20 bg-white/95 border border-slate-200 p-2.5 sm:p-3 rounded-2xl shadow-lg flex items-center gap-2.5 sm:gap-3 backdrop-blur-md animate-float-slow max-w-[calc(100%-1rem)]">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+                  <Award className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-700" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">100% Certified Pure</div>
-                  <div className="text-[10px] text-slate-500">Traditional Bilona & Vedic Method</div>
+                  <div className="text-[11px] sm:text-xs font-bold text-slate-900">100% Certified Pure</div>
+                  <div className="text-[9px] sm:text-[10px] text-slate-500">Traditional Bilona & Vedic Method</div>
                 </div>
               </div>
 
@@ -166,13 +167,14 @@ export const Hero: React.FC = () => {
               {malaiThean && (
                 <div 
                   onClick={() => openProductDetail(malaiThean)}
-                  className="absolute -bottom-5 -left-3 z-20 bg-white/95 border border-slate-200 p-3.5 rounded-2xl shadow-xl flex items-center gap-3.5 cursor-pointer hover:border-emerald-500 transition-all group backdrop-blur-md animate-float-reverse active:scale-95"
+                  className="absolute -bottom-4 left-2 sm:-bottom-5 sm:-left-3 z-20 bg-white/95 border border-slate-200 p-2.5 sm:p-3.5 rounded-2xl shadow-xl flex items-center gap-3 sm:gap-3.5 cursor-pointer hover:border-emerald-500 transition-all group backdrop-blur-md animate-float-reverse active:scale-95 max-w-[calc(100%-1rem)]"
                   title={`Click to view ${malaiThean.name} details`}
                 >
-                  <div className="w-12 h-12 rounded-xl overflow-hidden border border-slate-100 shrink-0 bg-slate-50">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden border border-slate-100 shrink-0 bg-slate-50">
                     <img
                       src={malaiThean.image}
                       alt={malaiThean.name}
+                      onError={(e) => handleProductImageError(e, malaiThean)}
                       className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>

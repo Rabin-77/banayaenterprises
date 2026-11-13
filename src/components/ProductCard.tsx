@@ -3,6 +3,7 @@ import { Heart, Star, ShoppingBag, Eye, Zap, Check } from 'lucide-react';
 import { Product } from '../types';
 import { useShop } from '../context/ShopContext';
 import { getPriceForProductWeight } from '../utils/pricing';
+import { handleProductImageError, isLocalAssetImage } from '../utils/imageFallback';
 
 interface ProductCardProps {
   product: Product;
@@ -59,31 +60,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <img
           src={product.image}
           alt={product.name}
+          onError={(e) => handleProductImageError(e, product)}
           className={`w-full h-full transition-transform duration-700 ease-out ${
             product.image.includes('rose_gulkand')
               ? 'object-cover object-center group-hover:scale-108'
-              : product.image.startsWith('/images/') ||
-                  product.image.startsWith('/assets/') ||
-                  product.image.startsWith('/uploads/') ||
-                  product.image.startsWith('data:image/')
-                ? 'object-contain p-3 group-hover:scale-108'
+              : isLocalAssetImage(product.image)
+                ? 'object-contain p-2.5 sm:p-3 group-hover:scale-108'
                 : 'object-cover object-center group-hover:scale-108'
           }`}
           loading="lazy"
           referrerPolicy="no-referrer"
         />
 
-        {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
+        {/* Badges (clipped left of wishlist icon so they never overlap on mobile) */}
+        <div className="absolute top-2 left-2 right-10 sm:top-2.5 sm:left-2.5 sm:right-12 flex flex-col items-start gap-1 z-10 pointer-events-none">
           {!product.inStock && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs bg-rose-600 text-white">
+            <span className="text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md shadow-xs bg-rose-600 text-white whitespace-nowrap">
               Out of Stock
             </span>
           )}
           {product.badges.slice(0, 2).map((badge, i) => (
             <span
               key={i}
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs ${
+              className={`text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-md shadow-xs max-w-full truncate ${
+                i > 0 ? 'hidden sm:inline-block' : ''
+              } ${
                 badge === 'Bestseller'
                   ? 'bg-amber-500 text-slate-950 font-bold'
                   : 'bg-slate-900/85 text-white backdrop-blur-xs'
@@ -98,14 +99,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <button
           id={`wishlist-btn-${product.id}`}
           onClick={handleWishlist}
-          className={`absolute top-2.5 right-2.5 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-200 shadow-xs z-10 cursor-pointer ${
+          className={`absolute top-2 right-2 sm:top-2.5 sm:right-2.5 w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-200 shadow-xs z-10 cursor-pointer ${
             inWishlist
               ? 'bg-rose-50 text-rose-600 border border-rose-200 scale-105'
               : 'bg-white/90 text-slate-500 hover:text-rose-600 hover:bg-white border border-slate-200/60'
           }`}
           title={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+          aria-label={inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
         >
-          <Heart className={`w-4 h-4 ${inWishlist ? 'fill-rose-600 text-rose-600' : ''}`} />
+          <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${inWishlist ? 'fill-rose-600 text-rose-600' : ''}`} />
         </button>
 
         {/* Quick View Button overlay on hover */}
@@ -124,24 +126,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Card Details Body */}
-      <div className="p-4 flex flex-col flex-1 justify-between">
+      <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between">
         
         <div>
           {/* Rating & Origin */}
-          <div className="flex items-center justify-between text-xs mb-1.5">
-            <div className="flex items-center gap-1 text-slate-800 font-bold">
-              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              <span>{product.rating}</span>
-              <span className="text-slate-400 font-normal text-[11px]">({product.reviewsCount})</span>
+          <div className="flex items-center justify-between gap-1 text-xs mb-1.5">
+            <div className="flex items-center gap-0.5 sm:gap-1 text-slate-800 font-bold shrink-0">
+              <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400" />
+              <span className="text-[11px] sm:text-xs">{product.rating}</span>
+              <span className="text-slate-400 font-normal text-[10px] sm:text-[11px]">({product.reviewsCount})</span>
             </div>
-            <span className="text-[10px] text-slate-500 font-medium truncate max-w-[110px] bg-slate-100 px-1.5 py-0.5 rounded">
+            <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium truncate max-w-[68px] sm:max-w-[110px] bg-slate-100 px-1.5 py-0.5 rounded">
               {product.origin.split(',')[0]}
             </span>
           </div>
 
           {/* Product Name & Tamil Subtitle */}
           <div className="mb-1.5">
-            <h3 className="font-heading text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors leading-tight line-clamp-1">
+            <h3 className="font-heading text-sm sm:text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors leading-tight line-clamp-1">
               {product.name}
             </h3>
             {product.tamilName && (
@@ -179,16 +181,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
 
           {/* Price Container */}
-          <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-xl font-bold text-slate-950 font-heading">
+          <div className="flex items-baseline flex-wrap gap-1 sm:gap-2 mb-2.5 sm:mb-3">
+            <span className="text-base sm:text-xl font-bold text-slate-950 font-heading whitespace-nowrap">
               ₹{currentPrices.price}
             </span>
             {currentPrices.original > currentPrices.price && (
               <>
-                <span className="text-xs text-slate-400 line-through font-normal">
+                <span className="text-[11px] sm:text-xs text-slate-400 line-through font-normal whitespace-nowrap">
                   ₹{currentPrices.original}
                 </span>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] sm:text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded whitespace-nowrap shrink-0">
                   {discountPercent}% OFF
                 </span>
               </>
@@ -196,12 +198,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           {/* Action Buttons: Add to Cart & Buy Now */}
-          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 pt-2 border-t border-slate-100">
             <button
               id={`add-to-cart-btn-${product.id}`}
               disabled={!product.inStock}
               onClick={handleAddToCart}
-              className={`py-2 px-2 rounded-xl font-semibold text-xs transition-all duration-200 flex items-center justify-center gap-1 ${
+              className={`py-2 px-1 sm:px-2 rounded-xl font-semibold text-[11px] sm:text-xs transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${
                 !product.inStock
                   ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
                   : isAddedAnim
@@ -212,13 +214,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             >
               {isAddedAnim ? (
                 <>
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
                   <span>Added</span>
                 </>
               ) : (
                 <>
-                  <ShoppingBag className="w-3.5 h-3.5 text-slate-700" />
-                  <span>{product.inStock ? 'Add' : 'Unavailable'}</span>
+                  <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-700 shrink-0" />
+                  <span>{product.inStock ? 'Add' : 'Out'}</span>
                 </>
               )}
             </button>
@@ -227,15 +229,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               id={`buy-now-btn-${product.id}`}
               disabled={!product.inStock}
               onClick={handleBuyNow}
-              className={`py-2 px-2 rounded-xl font-semibold text-xs transition-all duration-200 flex items-center justify-center gap-1 ${
+              className={`py-2 px-1 sm:px-2 rounded-xl font-semibold text-[11px] sm:text-xs transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${
                 product.inStock
                   ? 'bg-[#064E3B] hover:bg-[#047857] active:scale-95 text-white shadow-xs hover:shadow-md cursor-pointer'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed'
               }`}
               title={product.inStock ? 'Instant Checkout' : 'Currently out of stock'}
             >
-              <Zap className="w-3.5 h-3.5 text-amber-300" />
-              <span>{product.inStock ? 'Buy Now' : 'Out of Stock'}</span>
+              <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300 shrink-0" />
+              <span>{product.inStock ? 'Buy Now' : 'No Stock'}</span>
             </button>
           </div>
 
