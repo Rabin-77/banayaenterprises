@@ -1,11 +1,11 @@
 import React from 'react';
+import { MotionConfig } from 'motion/react';
 import { ShopProvider } from './context/ShopContext';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { TrustHighlights } from './components/TrustHighlights';
 import { ShopByCategory } from './components/ShopByCategory';
 import { FeaturedProducts } from './components/FeaturedProducts';
-import { NaturalIngredientsSection } from './components/NaturalIngredientsSection';
 import { WhyChooseUs } from './components/WhyChooseUs';
 import { AboutSection } from './components/AboutSection';
 import { PromoBanner } from './components/PromoBanner';
@@ -25,6 +25,7 @@ import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { ToastContainer } from './components/Toast';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
 import { SplashScreen } from './components/SplashScreen';
+import { ScrollProgressBar, ScrollToTopButton } from './components/ScrollReveal';
 import { useShop } from './context/ShopContext';
 
 function AppContent() {
@@ -32,6 +33,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-[#242A26] flex flex-col font-sans selection:bg-[#243D2F] selection:text-[#FAF7F2]">
+      {/* Scroll Progress Indicator */}
+      <ScrollProgressBar />
+
       {/* Brand Intro Splash Screen */}
       <SplashScreen />
       
@@ -52,10 +56,7 @@ function AppContent() {
         {/* 4. Featured & All Products Grid with Search, Filters & Sorting */}
         <FeaturedProducts />
 
-        {/* 5. Natural Ingredients Showcase */}
-        <NaturalIngredientsSection />
-
-        {/* 6. Why Choose Banaya Enterprise (6 Core Pillars) */}
+        {/* 5. Why Choose Banaya Enterprise (6 Core Pillars) */}
         <WhyChooseUs />
 
         {/* 7. About Us Heritage Story */}
@@ -83,6 +84,7 @@ function AppContent() {
       <AccountModal />
       <OrderTrackModal />
       <FloatingWhatsApp />
+      <ScrollToTopButton />
       <ToastContainer />
 
       {/* Secure Restricted Admin Dashboard */}
@@ -97,8 +99,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <ShopProvider>
-      <AppContent />
-    </ShopProvider>
+    <MotionConfig reducedMotion="user">
+      <ShopProvider>
+        <AppContent />
+      </ShopProvider>
+    </MotionConfig>
   );
 }

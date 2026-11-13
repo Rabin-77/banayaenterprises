@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, Check, Sparkles, Gift } from 'lucide-react';
+import { Mail, Check, Gift } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import { ScrollReveal } from './ScrollReveal';
 
 export const NewsletterSection: React.FC = () => {
   const { showToast } = useShop();
@@ -22,7 +23,7 @@ export const NewsletterSection: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         
         {/* Container Box */}
-        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-xl relative overflow-hidden">
+        <ScrollReveal distance={28} className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-xl relative overflow-hidden">
           
           {/* Subtle Organic Backdrops */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-50 rounded-full blur-2xl pointer-events-none"></div>
@@ -87,7 +88,7 @@ export const NewsletterSection: React.FC = () => {
 
           </div>
 
-        </div>
+        </ScrollReveal>
 
       </div>
     </section>

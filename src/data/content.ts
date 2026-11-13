@@ -105,38 +105,38 @@ export const WHY_CHOOSE_US = [
 export const INSTAGRAM_POSTS = [
   {
     id: 'post-1',
-    image: '/images/honeycomb_macro.jpg',
-    tag: 'Raw Harvest',
-    caption: 'Pure Western Ghats raw honeycomb extraction — straight from nature to your glass jar.'
+    image: '/assets/aistudio/2_a1d23cb5.png',
+    tag: 'Heritage Kanji',
+    caption: 'Banaya Karuppu Kavuni Kanji Mix — steamed black rice porridge served fresh in a traditional clay pot.'
   },
   {
     id: 'post-2',
-    image: 'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80',
-    tag: 'Sun Curing',
-    caption: '45-day slow sun-cooking of fragrant Damask Rose petals in vintage glass jars for traditional Gulkand.'
+    image: '/assets/aistudio/3_7c33f12c.png',
+    tag: 'Daily Wellness',
+    caption: 'Banaya ABC Malt — real apple, beetroot, carrot & roasted cashews blended for wholesome family nutrition.'
   },
   {
     id: 'post-3',
-    image: 'https://images.unsplash.com/photo-1631709497146-a239ef373cf1?auto=format&fit=crop&w=600&q=80',
-    tag: 'Vedic Bilona',
-    caption: 'Hand-churned curd butter slow-boiled with moringa leaves to yield fragrant granular golden ghee.'
+    image: '/assets/aistudio/2_b23bdfca.png',
+    tag: 'Zero Chemicals',
+    caption: 'Banaya Enterprises handcrafted herbal bath bar — natural botanical oils & gentle Ayurvedic skin care.'
   },
   {
     id: 'post-4',
-    image: '/images/mudavatukal_soup_front.jpeg',
-    tag: 'Joint Health',
-    caption: 'Authentic Banaya Mudavattukkal Soup Mix — heritage rhizome & native spices for strong joints.'
+    image: '/assets/aistudio/3_6493340b.png',
+    tag: 'Sun Curing',
+    caption: 'Banaya Rose Gulkand — fragrant Damask rose petals infused with 100% pure wildflower honey.'
   },
   {
     id: 'post-5',
-    image: '/images/abc_malt_poster.jpg',
-    tag: 'Daily Wellness',
-    caption: 'Morning nutrition redefined: Real Apple, Beetroot, Carrot & Sprouted Grains in creamy warm milk.'
+    image: '/assets/aistudio/2_80fb4fd9.png',
+    tag: 'Joint Health',
+    caption: 'Mudavattukkal Soup Mix — steaming hot traditional herbal rhizome broth for strength and joint comfort.'
   },
   {
     id: 'post-6',
-    image: 'https://images.unsplash.com/photo-1607006314647-79754f9a0c00?auto=format&fit=crop&w=600&q=80',
-    tag: 'Zero Chemicals',
-    caption: 'Cold-pressed coconut, neem & holy basil herbal bars curing in our natural drying chambers.'
+    image: '/assets/aistudio/2_6b73aea0.png',
+    tag: 'Raw Harvest',
+    caption: 'Banaya Mixed Nuts Honey — crunchy roasted almonds, cashews & raisins steeped in 100% pure golden honey.'
   }
 ];

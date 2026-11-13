@@ -1,9 +1,16 @@
-import React from 'react';
-import { Sparkles, ArrowRight, ShieldCheck, Award, Heart, CheckCircle2, Star, Flame } from 'lucide-react';
+import React, { useRef } from 'react';
+import { Sparkles, ArrowRight, Award, CheckCircle2, Star, Flame } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { useShop } from '../context/ShopContext';
 
 export const Hero: React.FC = () => {
   const { openProductDetail, products } = useShop();
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start']
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], [0, 48]);
 
   const scrollToShop = () => {
     const el = document.getElementById('shop-products');
@@ -23,7 +30,7 @@ export const Hero: React.FC = () => {
   const malaiThean = products.find(p => p.id === 'malai-thean') || products[1];
 
   return (
-    <section id="hero" className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/70 to-emerald-50/20 pt-8 pb-16 lg:pt-14 lg:pb-24 border-b border-slate-200/80">
+    <section ref={heroRef} id="hero" className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50/70 to-emerald-50/20 pt-8 pb-16 lg:pt-14 lg:pb-24 border-b border-slate-200/80">
       
       {/* Subtle modern background gradient orbs */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-3xl pointer-events-none -mr-32 -mt-32"></div>
@@ -33,7 +40,12 @@ export const Hero: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
           {/* Left Column: Typography & CTAs */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-7 space-y-6 text-center lg:text-left"
+          >
             
             {/* Top Brand Badge */}
             <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wide text-emerald-900 uppercase shadow-2xs">
@@ -106,10 +118,16 @@ export const Hero: React.FC = () => {
               </div>
             </div>
 
-          </div>
+          </motion.div>
 
           {/* Right Column: Hero Visual Showcase with Modern Floating Cards */}
-          <div className="lg:col-span-5 relative flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.75, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            style={{ y: imageY }}
+            className="lg:col-span-5 relative flex justify-center"
+          >
             
             {/* Main Lifestyle Hero Photo Frame */}
             <div className="relative w-full max-w-md lg:max-w-none">
@@ -177,7 +195,7 @@ export const Hero: React.FC = () => {
 
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
       </div>

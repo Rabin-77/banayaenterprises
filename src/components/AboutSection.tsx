@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { ArrowRight, CheckCircle2, ShieldCheck, Heart, Sparkles, X } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles, X } from 'lucide-react';
+import { ScrollReveal } from './ScrollReveal';
 
 export const AboutSection: React.FC = () => {
   const [showStoryModal, setShowStoryModal] = useState(false);
 
   return (
-    <section id="about-us" className="py-16 lg:py-24 bg-slate-50/70 border-b border-slate-200">
+    <section id="about-us" className="py-16 lg:py-24 bg-slate-50/70 border-b border-slate-200 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
           
           {/* Left Column: Visual Composition */}
-          <div className="lg:col-span-6 relative">
+          <ScrollReveal direction="left" distance={32} className="lg:col-span-6 relative">
             
             {/* Primary Main Image Frame */}
             <div className="relative rounded-3xl overflow-hidden shadow-xl border border-slate-200 aspect-4/3 sm:aspect-5/4 bg-slate-100">
@@ -43,10 +44,10 @@ export const AboutSection: React.FC = () => {
               </p>
             </div>
 
-          </div>
+          </ScrollReveal>
 
           {/* Right Column: Narrative Content */}
-          <div className="lg:col-span-6 space-y-6">
+          <ScrollReveal direction="right" delay={0.12} distance={32} className="lg:col-span-6 space-y-6">
             
             <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -103,7 +104,7 @@ export const AboutSection: React.FC = () => {
               </button>
             </div>
 
-          </div>
+          </ScrollReveal>
 
         </div>
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { CATEGORIES } from '../data/categories';
 import { useShop } from '../context/ShopContext';
+import { ScrollReveal } from './ScrollReveal';
 
 export const ShopByCategory: React.FC = () => {
   const { setSelectedCategory } = useShop();
@@ -19,7 +20,7 @@ export const ShopByCategory: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <ScrollReveal className="text-center max-w-3xl mx-auto mb-14" distance={24}>
           <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-3">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             Curated Categories
@@ -30,16 +31,18 @@ export const ShopByCategory: React.FC = () => {
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
             Every product category is rooted in traditional wellness principles, harvested ethically, and minimally processed for maximum vitality.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {CATEGORIES.map((cat, idx) => {
             const isFeaturedLarge = idx === 0; // highlight the first honey category nicely
             return (
-              <div
+              <ScrollReveal
                 key={cat.id}
                 id={`cat-card-${cat.id}`}
+                delay={(idx % 4) * 0.08}
+                distance={26}
                 onClick={() => handleCategorySelect(cat.slug)}
                 className={`group relative bg-white rounded-2xl overflow-hidden border border-slate-200 hover:border-emerald-500/80 transition-all duration-300 shadow-xs hover:shadow-xl cursor-pointer flex flex-col justify-between ${
                   isFeaturedLarge ? 'sm:col-span-2 lg:col-span-2' : ''
@@ -84,7 +87,7 @@ export const ShopByCategory: React.FC = () => {
                     <ArrowRight className="w-3.5 h-3.5 text-amber-300 group-hover:translate-x-0.5 transition-transform" />
                   </button>
                 </div>
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>

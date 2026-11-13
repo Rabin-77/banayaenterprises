@@ -4,6 +4,7 @@ import {
   MessageCircle, ShieldCheck, Heart, Sparkles, ChevronRight, X, KeyRound 
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import { ScrollReveal } from './ScrollReveal';
 
 export const Footer: React.FC = () => {
   const { setSelectedCategory, setActiveModal } = useShop();
@@ -37,7 +38,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main 4 Columns Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-slate-800">
+        <ScrollReveal distance={22} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-slate-800">
           
           {/* Column 1: Brand Info (Span 4) */}
           <div className="lg:col-span-4 space-y-4">
@@ -235,7 +236,7 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-        </div>
+        </ScrollReveal>
 
         {/* Bottom Bar with Copyright & Admin Portal */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 border-t border-slate-800/80">

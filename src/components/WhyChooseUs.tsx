@@ -1,6 +1,7 @@
 import React from 'react';
 import { Leaf, Sparkles, ShieldCheck, HeartHandshake, Smile, Truck } from 'lucide-react';
 import { WHY_CHOOSE_US } from '../data/content';
+import { ScrollReveal } from './ScrollReveal';
 
 export const WhyChooseUs: React.FC = () => {
   const iconMap: Record<string, React.ElementType> = {
@@ -17,7 +18,7 @@ export const WhyChooseUs: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <ScrollReveal distance={24} className="text-center max-w-3xl mx-auto mb-14">
           <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-3">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             The Banayana Standard
@@ -28,16 +29,18 @@ export const WhyChooseUs: React.FC = () => {
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
             We bridge time-honored Indian wellness wisdom and uncompromised modern lab testing so your family can thrive with total peace of mind.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* 6 Benefit Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {WHY_CHOOSE_US.map((item, idx) => {
             const Icon = iconMap[item.iconName] || Leaf;
             return (
-              <div
+              <ScrollReveal
                 key={item.id}
                 id={`benefit-card-${item.id}`}
+                delay={(idx % 3) * 0.08}
+                distance={26}
                 className="bg-slate-50/70 rounded-2xl p-6 sm:p-7 border border-slate-200 hover:border-emerald-500/80 transition-all duration-300 shadow-xs hover:shadow-xl flex flex-col justify-between group"
               >
                 <div>
@@ -58,7 +61,7 @@ export const WhyChooseUs: React.FC = () => {
                   </span>
                   <span className="text-slate-400 font-mono">0{idx + 1}</span>
                 </div>
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>

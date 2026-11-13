@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
-import { Sparkles, SlidersHorizontal, Search, Check, RefreshCw } from 'lucide-react';
+import { Sparkles, SlidersHorizontal, Search, RefreshCw } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from './ProductCard';
+import { ScrollReveal } from './ScrollReveal';
 
 export const FeaturedProducts: React.FC = () => {
   const { 
@@ -65,7 +66,7 @@ export const FeaturedProducts: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <ScrollReveal distance={24} className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div>
             <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-2.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -118,7 +119,7 @@ export const FeaturedProducts: React.FC = () => {
               </select>
             </div>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Category Filter Tabs Bar */}
         <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none no-scrollbar">
@@ -170,8 +171,10 @@ export const FeaturedProducts: React.FC = () => {
         {/* Products Grid */}
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {filteredProducts.map((product, idx) => (
+              <ScrollReveal key={product.id} delay={(idx % 4) * 0.07} distance={24} amount={0.08}>
+                <ProductCard product={product} />
+              </ScrollReveal>
             ))}
           </div>
         ) : (

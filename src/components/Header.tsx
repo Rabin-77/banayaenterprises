@@ -157,12 +157,6 @@ export const Header: React.FC = () => {
                 Categories
               </button>
               <button
-                onClick={() => handleNavClick('ingredients-section')}
-                className="text-slate-700 hover:text-[#064E3B] font-medium text-sm transition-colors cursor-pointer py-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#059669] after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
-              >
-                Ingredients
-              </button>
-              <button
                 onClick={() => handleNavClick('why-choose-us')}
                 className="text-slate-700 hover:text-[#064E3B] font-medium text-sm transition-colors cursor-pointer py-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#059669] after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
               >
@@ -305,12 +299,6 @@ export const Header: React.FC = () => {
                 className="text-left py-2 px-3 text-slate-700 font-medium text-sm hover:bg-slate-50 rounded-lg transition-colors"
               >
                 Categories
-              </button>
-              <button
-                onClick={() => handleNavClick('ingredients-section')}
-                className="text-left py-2 px-3 text-slate-700 font-medium text-sm hover:bg-slate-50 rounded-lg transition-colors"
-              >
-                Pure Ingredients
               </button>
               <button
                 onClick={() => handleNavClick('why-choose-us')}

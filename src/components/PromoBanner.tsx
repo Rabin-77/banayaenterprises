@@ -1,9 +1,17 @@
-import React from 'react';
-import { ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
+import React, { useRef } from 'react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { useShop } from '../context/ShopContext';
+import { ScrollReveal } from './ScrollReveal';
 
 export const PromoBanner: React.FC = () => {
   const { setSelectedCategory } = useShop();
+  const bannerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: bannerRef,
+    offset: ['start end', 'end start']
+  });
+  const bgY = useTransform(scrollYProgress, [0, 1], [-24, 24]);
 
   const handleShopCollection = () => {
     setSelectedCategory('all');
@@ -14,17 +22,18 @@ export const PromoBanner: React.FC = () => {
   };
 
   return (
-    <section id="special-promotion-banner" className="py-14 sm:py-20 bg-slate-50/50">
+    <section ref={bannerRef} id="special-promotion-banner" className="py-14 sm:py-20 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Banner Card with Modern Clean Overlay */}
-        <div className="relative rounded-3xl overflow-hidden shadow-2xl min-h-[380px] sm:min-h-[420px] flex items-center justify-center text-center p-8 sm:p-14 border border-slate-200">
+        <ScrollReveal direction="scale" duration={0.7} className="relative rounded-3xl overflow-hidden shadow-2xl min-h-[380px] sm:min-h-[420px] flex items-center justify-center text-center p-8 sm:p-14 border border-slate-200">
           
-          {/* Background Image */}
-          <img
+          {/* Background Image with Scroll Parallax */}
+          <motion.img
+            style={{ y: bgY, scale: 1.08 }}
             src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=1600&q=80"
             alt="Natural traditional wellness collection"
-            className="absolute inset-0 w-full h-full object-cover object-center transform scale-102 hover:scale-105 transition-transform duration-1000"
+            className="absolute inset-0 w-full h-full object-cover object-center"
           />
 
           {/* Deep Emerald Gradient Overlay */}
@@ -67,7 +76,7 @@ export const PromoBanner: React.FC = () => {
 
           </div>
 
-        </div>
+        </ScrollReveal>
 
       </div>
     </section>

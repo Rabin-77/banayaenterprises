@@ -1,6 +1,7 @@
 import React from 'react';
-import { Instagram, Sparkles, Heart } from 'lucide-react';
+import { Instagram } from 'lucide-react';
 import { INSTAGRAM_POSTS } from '../data/content';
+import { ScrollReveal } from './ScrollReveal';
 
 export const InstagramSection: React.FC = () => {
   return (
@@ -8,7 +9,7 @@ export const InstagramSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <ScrollReveal distance={24} className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <div>
             <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-2.5">
               <Instagram className="w-3.5 h-3.5 text-amber-500" />
@@ -31,14 +32,16 @@ export const InstagramSection: React.FC = () => {
             <Instagram className="w-4 h-4 text-amber-300" />
             <span>Follow Us @banayanaenterprise</span>
           </a>
-        </div>
+        </ScrollReveal>
 
         {/* 6 Social Photo Cards Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-          {INSTAGRAM_POSTS.map((post) => (
-            <div
+          {INSTAGRAM_POSTS.map((post, idx) => (
+            <ScrollReveal
               key={post.id}
               id={post.id}
+              delay={idx * 0.06}
+              distance={22}
               className="group relative aspect-square rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-2xs hover:shadow-xl transition-all duration-300 cursor-pointer"
             >
               <img
@@ -64,7 +67,7 @@ export const InstagramSection: React.FC = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
 
