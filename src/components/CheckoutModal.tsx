@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, CheckCircle2, ShieldCheck, Smartphone, 
-  ArrowRight, ArrowLeft, Download,
-  MessageCircle, Send, Copy, Check, QrCode,
-  ExternalLink, Sparkles, Lock, RefreshCw, Clock, BadgeCheck, FileText, Printer
+  ArrowRight, ArrowLeft,
+  MessageCircle, Send, Copy, Check,
+  Lock, RefreshCw, Clock, BadgeCheck, Printer
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useShop } from '../context/ShopContext';
@@ -14,6 +14,31 @@ import {
   DISPLAY_PHONE_NUMBER,
   BANAYA_UPI_ID 
 } from '../utils/whatsapp';
+import { getPriceForProductWeight } from '../utils/pricing';
+
+async function copyTextSafely(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Fallback below for restricted iframe contexts
+  }
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return ok;
+  } catch {
+    return false;
+  }
+}
 
 export const CheckoutModal: React.FC = () => {
   const { 
@@ -25,6 +50,7 @@ export const CheckoutModal: React.FC = () => {
     cartShipping, 
     cartTotal, 
     placeOrder, 
+    getEffectivePrice,
     showToast 
   } = useShop();
 
@@ -54,6 +80,20 @@ export const CheckoutModal: React.FC = () => {
   const [state, setState] = useState('Tamil Nadu');
   const [pin, setPin] = useState('600040');
 
+  // PIN/Address state above...
+  const timersRef = useRef<{ intervals: number[]; timeouts: number[] }>({ intervals: [], timeouts: [] });
+
+  const clearAllVerificationTimers = () => {
+    timersRef.current.intervals.forEach((id) => window.clearInterval(id));
+    timersRef.current.timeouts.forEach((id) => window.clearTimeout(id));
+    timersRef.current.intervals = [];
+    timersRef.current.timeouts = [];
+  };
+
+  useEffect(() => {
+    return () => clearAllVerificationTimers();
+  }, []);
+
   if (activeModal !== 'checkout') return null;
 
   const upiIntentUrl = `upi://pay?pa=${BANAYA_UPI_ID}&pn=Banaya%20Enterprise&am=${cartTotal}&cu=INR&tn=Order%20Payment%20Banaya`;
@@ -61,6 +101,7 @@ export const CheckoutModal: React.FC = () => {
 
   // Security: If customer didn't pay, instantly close and return directly to Home page
   const handleCancelAndReturnToHome = () => {
+    clearAllVerificationTimers();
     setActiveModal(null);
     setStep('summary');
     setCreatedOrder(null);
@@ -88,19 +129,34 @@ export const CheckoutModal: React.FC = () => {
       return;
     }
 
-    // Attempt to directly trigger Google Pay / UPI on mobile
-    try {
-      window.location.href = gpayIntentUrl;
-    } catch {
+    // Trigger GPay/UPI deep link only on mobile browsers so desktop iframes don't throw navigation errors
+    const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobileDevice) {
       try {
-        window.location.href = upiIntentUrl;
-      } catch {}
+        const link = document.createElement('a');
+        link.href = gpayIntentUrl;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch {
+        try {
+          const fallback = document.createElement('a');
+          fallback.href = upiIntentUrl;
+          fallback.style.display = 'none';
+          document.body.appendChild(fallback);
+          fallback.click();
+          document.body.removeChild(fallback);
+        } catch {
+          // QR code displayed in next step
+        }
+      }
     }
 
     // Immediately open the requested "I have paid ₹{amount} • Confirm & Send on WhatsApp" page!
     setStep('paid_confirm');
     setPaymentConfirmedByCustomer(false);
-    showToast('Opening Google Pay', `Paying ₹${cartTotal} to Banaya Enterprise (${BANAYA_UPI_ID})`, 'info');
+    showToast('UPI Payment Ready', `Pay ₹${cartTotal} via GPay or QR to Banaya Enterprise (${BANAYA_UPI_ID})`, 'info');
   };
 
   // When user returns from GPay and clicks "I have paid Rs ... Confirm and send on whatsapp"
@@ -114,29 +170,32 @@ export const CheckoutModal: React.FC = () => {
       return;
     }
 
+    clearAllVerificationTimers();
+
     // Initiate smooth animated transaction sequence
     setStep('verifying');
     setVerifyingProgress(15);
     setVerifyingStage(0);
 
-    const progressInterval = setInterval(() => {
+    const progressInterval = window.setInterval(() => {
       setVerifyingProgress(prev => {
         if (prev >= 92) {
-          clearInterval(progressInterval);
+          window.clearInterval(progressInterval);
           return 95;
         }
         return prev + 15;
       });
     }, 250);
+    timersRef.current.intervals.push(progressInterval);
 
     // Dynamic checklist milestone updates
-    setTimeout(() => setVerifyingStage(1), 550);
-    setTimeout(() => setVerifyingStage(2), 1100);
-    setTimeout(() => setVerifyingStage(3), 1650);
+    timersRef.current.timeouts.push(window.setTimeout(() => setVerifyingStage(1), 550));
+    timersRef.current.timeouts.push(window.setTimeout(() => setVerifyingStage(2), 1100));
+    timersRef.current.timeouts.push(window.setTimeout(() => setVerifyingStage(3), 1650));
 
     // Transaction approved and finalized
-    setTimeout(() => {
-      clearInterval(progressInterval);
+    const finalizeTimeout = window.setTimeout(() => {
+      window.clearInterval(progressInterval);
       setVerifyingProgress(100);
 
       const generatedTxnId = `TXN-BNY-${Date.now().toString().slice(-6)}`;
@@ -164,7 +223,9 @@ export const CheckoutModal: React.FC = () => {
           spread: 85,
           origin: { y: 0.55 }
         });
-      } catch {}
+      } catch {
+        // ignore animation error
+      }
 
       // Automatically send order and paid status directly to WhatsApp
       const whatsappUrl = getOrderWhatsAppUrl(order, generatedBankRef);
@@ -180,13 +241,18 @@ export const CheckoutModal: React.FC = () => {
         'success'
       );
     }, 2200);
+    timersRef.current.timeouts.push(finalizeTimeout);
   };
 
-  const handleCopyUpi = () => {
-    navigator.clipboard.writeText(BANAYA_UPI_ID);
-    setCopiedUpi(true);
-    showToast('UPI ID Copied', `${BANAYA_UPI_ID} copied to clipboard!`, 'info');
-    setTimeout(() => setCopiedUpi(false), 3000);
+  const handleCopyUpi = async () => {
+    const ok = await copyTextSafely(BANAYA_UPI_ID);
+    if (ok) {
+      setCopiedUpi(true);
+      showToast('UPI ID Copied', `${BANAYA_UPI_ID} copied to clipboard!`, 'info');
+      setTimeout(() => setCopiedUpi(false), 3000);
+    } else {
+      showToast('Copy UPI ID', `Merchant UPI ID: ${BANAYA_UPI_ID}`, 'info');
+    }
   };
 
   const handleSendToWhatsApp = () => {
@@ -196,6 +262,7 @@ export const CheckoutModal: React.FC = () => {
   };
 
   const handleClose = () => {
+    clearAllVerificationTimers();
     if (step === 'paid_confirm' && !createdOrder) {
       handleCancelAndReturnToHome();
     } else {
@@ -460,24 +527,30 @@ export const CheckoutModal: React.FC = () => {
 
                   {/* List of items */}
                   <div className="max-h-52 overflow-y-auto space-y-3 pr-1">
-                    {cart.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 text-xs p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                        <img 
-                          src={item.product.image} 
-                          alt={item.product.name} 
-                          className={`w-12 h-12 rounded-lg border border-slate-200 shrink-0 bg-white ${
-                            item.product.image.startsWith('/images/') || item.product.image.startsWith('/assets/')
-                              ? 'object-contain p-0.5'
-                              : 'object-cover'
-                          }`} 
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-slate-900 truncate">{item.product.name}</h4>
-                          <span className="text-[11px] text-emerald-800 font-medium block">{item.selectedWeight} × {item.quantity}</span>
+                    {cart.map((item, i) => {
+                      const unitPrice = getEffectivePrice(item);
+                      return (
+                        <div key={i} className="flex items-center gap-3 text-xs p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                          <img 
+                            src={item.product.image} 
+                            alt={item.product.name} 
+                            className={`w-12 h-12 rounded-lg border border-slate-200 shrink-0 bg-white ${
+                              item.product.image.startsWith('/images/') ||
+                              item.product.image.startsWith('/assets/') ||
+                              item.product.image.startsWith('/uploads/') ||
+                              item.product.image.startsWith('data:image/')
+                                ? 'object-contain p-0.5'
+                                : 'object-cover'
+                            }`} 
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-slate-900 truncate">{item.product.name}</h4>
+                            <span className="text-[11px] text-emerald-800 font-medium block">{item.selectedWeight} × {item.quantity}</span>
+                          </div>
+                          <span className="font-bold text-slate-950 text-sm">₹{unitPrice * item.quantity}</span>
                         </div>
-                        <span className="font-bold text-slate-950 text-sm">₹{item.product.price * item.quantity}</span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {/* Price breakdown */}
@@ -865,10 +938,12 @@ export const CheckoutModal: React.FC = () => {
                       </span>
                       <button
                         type="button"
-                        onClick={() => {
-                          navigator.clipboard.writeText(createdOrder.transactionId || createdOrder.id);
-                          setCopiedTxn(true);
-                          setTimeout(() => setCopiedTxn(false), 2000);
+                        onClick={async () => {
+                          const ok = await copyTextSafely(createdOrder.transactionId || createdOrder.id);
+                          if (ok) {
+                            setCopiedTxn(true);
+                            setTimeout(() => setCopiedTxn(false), 2000);
+                          }
                         }}
                         className="text-slate-400 hover:text-slate-700 cursor-pointer p-0.5"
                         title="Copy Transaction ID"
@@ -891,10 +966,12 @@ export const CheckoutModal: React.FC = () => {
                       </span>
                       <button
                         type="button"
-                        onClick={() => {
-                          navigator.clipboard.writeText(createdOrder.bankRef || utrNumber || 'CONFIRMED');
-                          setCopiedUtr(true);
-                          setTimeout(() => setCopiedUtr(false), 2000);
+                        onClick={async () => {
+                          const ok = await copyTextSafely(createdOrder.bankRef || utrNumber || 'CONFIRMED');
+                          if (ok) {
+                            setCopiedUtr(true);
+                            setTimeout(() => setCopiedUtr(false), 2000);
+                          }
                         }}
                         className="text-slate-400 hover:text-slate-700 cursor-pointer p-0.5"
                         title="Copy Bank UTR"
@@ -927,20 +1004,23 @@ export const CheckoutModal: React.FC = () => {
                 <div className="bg-white rounded-2xl border border-slate-200 p-4 space-y-3">
                   <span className="text-[11px] text-slate-400 font-semibold block uppercase">Purchased Natural Items</span>
                   <div className="divide-y divide-slate-100">
-                    {createdOrder.items.map((item, idx) => (
-                      <div key={idx} className="py-2 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-2.5">
-                          <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">
-                            {idx + 1}
-                          </span>
-                          <div>
-                            <span className="font-bold text-slate-900 block">{item.product.name}</span>
-                            <span className="text-[11px] text-slate-500 font-medium">{item.selectedWeight} × {item.quantity}</span>
+                    {createdOrder.items.map((item, idx) => {
+                      const unitPrice = getPriceForProductWeight(item.product, item.selectedWeight).price;
+                      return (
+                        <div key={idx} className="py-2 flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2.5">
+                            <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">
+                              {idx + 1}
+                            </span>
+                            <div>
+                              <span className="font-bold text-slate-900 block">{item.product.name}</span>
+                              <span className="text-[11px] text-slate-500 font-medium">{item.selectedWeight} × {item.quantity}</span>
+                            </div>
                           </div>
+                          <span className="font-bold text-slate-950">₹{unitPrice * item.quantity}</span>
                         </div>
-                        <span className="font-bold text-slate-950">₹{item.product.price * item.quantity}</span>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {/* Financial Total Breakdown */}

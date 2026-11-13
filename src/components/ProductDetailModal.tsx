@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Star, Heart, ShoppingBag, Zap, ShieldCheck, CheckCircle2, 
-  Sparkles, Award, RotateCcw, Truck, Leaf, ChevronLeft, ChevronRight,
+  Truck, Leaf, ChevronLeft, ChevronRight,
   MessageCircle
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
-import { Product } from '../types';
-import { getProductBookingWhatsAppUrl, openWhatsAppUrl, DISPLAY_PHONE_NUMBER } from '../utils/whatsapp';
+import { getProductBookingWhatsAppUrl, openWhatsAppUrl } from '../utils/whatsapp';
 import { getPriceForProductWeight } from '../utils/pricing';
 
 export const ProductDetailModal: React.FC = () => {
@@ -15,7 +14,6 @@ export const ProductDetailModal: React.FC = () => {
     activeModal, 
     setActiveModal, 
     addToCart, 
-    openQuickCheckout, 
     toggleWishlist, 
     isInWishlist, 
     products, 
@@ -75,7 +73,10 @@ export const ProductDetailModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 md:p-6 animate-modalBackdrop">
+    <div
+      onClick={handleClose}
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 md:p-6 animate-modalBackdrop"
+    >
       
       {/* Modal Container */}
       <div 
@@ -240,8 +241,12 @@ export const ProductDetailModal: React.FC = () => {
                   <span className="text-xs text-slate-500">
                     Based on <strong>{selectedProduct.reviewsCount}</strong> verified reviews
                   </span>
-                  <span className="text-xs text-emerald-700 font-semibold flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    <CheckCircle2 className="w-3 h-3" /> In Stock
+                  <span className={`text-xs font-semibold flex items-center gap-1 px-2 py-0.5 rounded border ${
+                    selectedProduct.inStock
+                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                      : 'text-rose-700 bg-rose-50 border-rose-200'
+                  }`}>
+                    <CheckCircle2 className="w-3 h-3" /> {selectedProduct.inStock ? 'In Stock' : 'Out of Stock'}
                   </span>
                 </div>
 
@@ -330,11 +335,16 @@ export const ProductDetailModal: React.FC = () => {
                     {/* Add to Cart */}
                     <button
                       id="modal-add-to-cart-btn"
+                      disabled={!selectedProduct.inStock}
                       onClick={handleAddToCart}
-                      className="flex-1 py-3 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs"
+                      className={`flex-1 py-3 px-4 border rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-2xs ${
+                        selectedProduct.inStock
+                          ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-emerald-200 cursor-pointer'
+                          : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
+                      }`}
                     >
                       <ShoppingBag className="w-4 h-4 text-emerald-800" />
-                      <span>Add to Bag (₹{currentPrices.price * quantity})</span>
+                      <span>{selectedProduct.inStock ? `Add to Bag (₹${currentPrices.price * quantity})` : 'Out of Stock'}</span>
                     </button>
 
                     {/* Wishlist toggle */}
@@ -357,11 +367,16 @@ export const ProductDetailModal: React.FC = () => {
                     {/* Instant Buy Now Button */}
                     <button
                       id="modal-buy-now-btn"
+                      disabled={!selectedProduct.inStock}
                       onClick={handleBuyNow}
-                      className="w-full py-3.5 px-4 bg-[#064E3B] hover:bg-[#047857] text-white rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg cursor-pointer"
+                      className={`w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+                        selectedProduct.inStock
+                          ? 'bg-[#064E3B] hover:bg-[#047857] text-white shadow-md hover:shadow-lg cursor-pointer'
+                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                      }`}
                     >
                       <Zap className="w-4 h-4 text-amber-300" />
-                      <span>Buy Now • Checkout</span>
+                      <span>{selectedProduct.inStock ? 'Buy Now • Checkout' : 'Currently Unavailable'}</span>
                     </button>
 
                     {/* Direct WhatsApp Booking Button */}
@@ -490,7 +505,10 @@ export const ProductDetailModal: React.FC = () => {
                       src={relProduct.image}
                       alt={relProduct.name}
                       className={`w-16 h-16 rounded-xl group-hover:scale-105 transition-transform bg-slate-50 ${
-                        relProduct.image.startsWith('/images/') || relProduct.image.startsWith('/assets/')
+                        relProduct.image.startsWith('/images/') ||
+                        relProduct.image.startsWith('/assets/') ||
+                        relProduct.image.startsWith('/uploads/') ||
+                        relProduct.image.startsWith('data:image/')
                           ? 'object-contain p-1'
                           : 'object-cover'
                       }`}

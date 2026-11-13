@@ -71,6 +71,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
+          {!product.inStock && (
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs bg-rose-600 text-white">
+              Out of Stock
+            </span>
+          )}
           {product.badges.slice(0, 2).map((badge, i) => (
             <span
               key={i}
@@ -190,13 +195,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
             <button
               id={`add-to-cart-btn-${product.id}`}
+              disabled={!product.inStock}
               onClick={handleAddToCart}
-              className={`py-2 px-2 rounded-xl font-semibold text-xs transition-all duration-200 flex items-center justify-center gap-1 cursor-pointer active:scale-95 ${
-                isAddedAnim
-                  ? 'bg-emerald-600 text-white shadow-xs animate-badgePop'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 hover:border-slate-300'
+              className={`py-2 px-2 rounded-xl font-semibold text-xs transition-all duration-200 flex items-center justify-center gap-1 ${
+                !product.inStock
+                  ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+                  : isAddedAnim
+                    ? 'bg-emerald-600 text-white shadow-xs animate-badgePop cursor-pointer active:scale-95'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 hover:border-slate-300 cursor-pointer active:scale-95'
               }`}
-              title="Add item to your cart"
+              title={product.inStock ? 'Add item to your cart' : 'Currently out of stock'}
             >
               {isAddedAnim ? (
                 <>
@@ -206,19 +214,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               ) : (
                 <>
                   <ShoppingBag className="w-3.5 h-3.5 text-slate-700" />
-                  <span>Add</span>
+                  <span>{product.inStock ? 'Add' : 'Unavailable'}</span>
                 </>
               )}
             </button>
 
             <button
               id={`buy-now-btn-${product.id}`}
+              disabled={!product.inStock}
               onClick={handleBuyNow}
-              className="py-2 px-2 rounded-xl bg-[#064E3B] hover:bg-[#047857] active:scale-95 text-white font-semibold text-xs transition-all duration-200 flex items-center justify-center gap-1 shadow-xs hover:shadow-md cursor-pointer"
-              title="Instant Checkout"
+              className={`py-2 px-2 rounded-xl font-semibold text-xs transition-all duration-200 flex items-center justify-center gap-1 ${
+                product.inStock
+                  ? 'bg-[#064E3B] hover:bg-[#047857] active:scale-95 text-white shadow-xs hover:shadow-md cursor-pointer'
+                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+              }`}
+              title={product.inStock ? 'Instant Checkout' : 'Currently out of stock'}
             >
               <Zap className="w-3.5 h-3.5 text-amber-300" />
-              <span>Buy Now</span>
+              <span>{product.inStock ? 'Buy Now' : 'Out of Stock'}</span>
             </button>
           </div>
 

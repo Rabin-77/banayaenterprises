@@ -54,8 +54,12 @@ export const FeaturedProducts: React.FC = () => {
     } else if (sortBy === 'rating') {
       list.sort((a, b) => b.rating - a.rating);
     } else {
-      // Default: Bestsellers & Featured
-      list.sort((a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0));
+      // Default: Newly added & Bestsellers first so new launches appear live at the top
+      list.sort((a, b) => {
+        const scoreA = (a.isNew ? 2 : 0) + (a.isBestSeller ? 1 : 0);
+        const scoreB = (b.isNew ? 2 : 0) + (b.isBestSeller ? 1 : 0);
+        return scoreB - scoreA;
+      });
     }
 
     return list;

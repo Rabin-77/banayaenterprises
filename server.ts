@@ -69,9 +69,17 @@ const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const DEFAULT_PRODUCTS_PATH = path.join(ROOT_DIR, 'src', 'data', 'products.json');
 const ADMIN_PASSKEY = process.env.ADMIN_PASSKEY || 'banayana00123';
 
-const isProduction =
-  process.env.NODE_ENV === 'production' ||
-  (process.env.npm_lifecycle_event === 'start' && fs.existsSync(path.join(DIST_DIR, 'index.html')));
+const isRunningTsx =
+  process.execArgv.some((arg) => arg.includes('tsx')) ||
+  (process.env._ || '').includes('tsx');
+
+const isDev =
+  process.env.NODE_ENV === 'development' ||
+  process.env.npm_lifecycle_event === 'dev' ||
+  isRunningTsx ||
+  !fs.existsSync(path.join(DIST_DIR, 'index.html'));
+
+const isProduction = !isDev;
 
 function resolveWritableDir(primaryDir: string, fallbackDir: string): string {
   try {
@@ -225,8 +233,8 @@ function persistStore(syncProductsSeed = false): void {
   fs.writeFileSync(tempFile, JSON.stringify(storeState, null, 2), 'utf8');
   fs.renameSync(tempFile, STORE_FILE);
 
-  // In dev mode, also mirror product catalog into src/data/products.json so publishing carries edits automatically
-  if (syncProductsSeed && !isProduction) {
+  // Mirror product catalog into src/data/products.json whenever writable so publishing carries edits automatically
+  if (syncProductsSeed) {
     try {
       fs.writeFileSync(DEFAULT_PRODUCTS_PATH, JSON.stringify(storeState.products, null, 2) + '\n', 'utf8');
     } catch (err) {

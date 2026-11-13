@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MotionConfig } from 'motion/react';
 import { ShopProvider } from './context/ShopContext';
 import { Header } from './components/Header';
@@ -30,6 +30,19 @@ import { useShop } from './context/ShopContext';
 
 function AppContent() {
   const { activeModal, setActiveModal } = useShop();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setActiveModal(activeModal === 'search' ? null : 'search');
+      } else if (e.key === 'Escape' && activeModal) {
+        setActiveModal(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeModal, setActiveModal]);
 
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-[#242A26] flex flex-col font-sans selection:bg-[#243D2F] selection:text-[#FAF7F2]">

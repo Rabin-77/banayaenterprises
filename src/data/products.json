@@ -11,18 +11,28 @@
     "rating": 4.94,
     "reviewsCount": 168,
     "inStock": true,
-    "weightOptions": ["250g", "500g", "1kg"],
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
     "defaultWeight": "500g",
-    "badges": ["100% Pure", "Wildflower", "Bestseller"],
-    "image": "/images/banaya_honey.jpg",
+    "badges": [
+      "100% Pure",
+      "Wildflower",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794565921243-d69832.png",
     "gallery": [
-      "/images/banaya_honey.jpg",
+      "/uploads/1-1794565921243-d69832.png",
       "/assets/aistudio/honey_web_1d34d9ea.jfif",
-      "/images/natural_honey_jar.jpg",
-      "/images/honeycomb_macro.jpg"
+      "/uploads/2-1794565950101-a8464d.webp",
+      "/uploads/3-1794565953389-91e6eb.webp"
     ],
     "description": "Banaya Enterprise 100% Pure Wildflower Honey is harvested directly from happy bees and natural honeycombs using traditional cold filtering without heating, pasteurization, or adulteration. Rich in natural bee pollen, live enzymes, and organic floral nectars, this golden nectar offers wholesome nutrition and natural sweetness for the entire family.",
-    "ingredients": ["100% Pure Raw Multi-Floral Wildflower Honey"],
+    "ingredients": [
+      "100% Pure Raw Multi-Floral Wildflower Honey"
+    ],
     "keyBenefits": [
       "Natural immune enhancer rich in antioxidants and active enzymes",
       "Effective traditional remedy for cough, sore throat, and respiratory comfort",
@@ -30,7 +40,6 @@
       "Supports gut health and smooth digestion when taken with lukewarm water"
     ],
     "howToUse": "Take 1-2 teaspoons directly on an empty stomach every morning, or mix with lukewarm water and a squeeze of fresh lemon. Do not heat directly or boil.",
-    "storageInfo": "Store in a cool, dry place. Crystallization is a natural characteristic of pure raw honey—simply place the glass jar in warm water to reliquefy.",
     "origin": "Banaya Enterprise Apiaries",
     "isBestSeller": true,
     "isNew": false
@@ -47,17 +56,29 @@
     "rating": 4.9,
     "reviewsCount": 148,
     "inStock": true,
-    "weightOptions": ["250g", "500g", "1kg"],
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
     "defaultWeight": "500g",
-    "badges": ["Bee Pollen Rich", "Wild Harvested", "Bestseller"],
-    "image": "/images/natural_honey_jar.jpg",
+    "badges": [
+      "Bee Pollen Rich",
+      "Wild Harvested",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563473231-bdec82.webp",
     "gallery": [
-      "/images/natural_honey_jar.jpg",
-      "/images/honeycomb_macro.jpg",
-      "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=1000&q=80"
+      "/uploads/1-1794563473231-bdec82.webp",
+      "/uploads/2-1794563476636-ed85df.webp",
+      "/uploads/3-1794563480600-32a974.webp"
     ],
     "description": "Magarantha Thean (Bee Pollen Honey) is naturally concentrated with active flower pollen collected by wild honey bees from diverse medicinal herbs in deep virgin forests. Unheated and free from added corn syrups, this dark amber elixir retains its natural living enzymes, flavonoids, and vital bio-nutrients.",
-    "ingredients": ["100% Pure Raw Forest Honey", "Naturally Occurring Multi-Floral Bee Pollen", "Propolis Traces"],
+    "ingredients": [
+      "100% Pure Raw Forest Honey",
+      "Naturally Occurring Multi-Floral Bee Pollen",
+      "Propolis Traces"
+    ],
     "keyBenefits": [
       "Boosts cellular immunity, daily stamina, and physical endurance naturally",
       "Rich in bioactive pollen, antioxidants, B-vitamins & natural digestive enzymes",
@@ -65,7 +86,6 @@
       "A wholesome natural pre-workout energizer and nutritional powerhouse"
     ],
     "howToUse": "Take 1 to 2 teaspoons directly on an empty stomach every morning, or mix with lukewarm water and lemon. Never add to boiling liquids.",
-    "storageInfo": "Store in a cool, dry place. Natural crystallization proves raw purity—place jar in warm water to reliquefy.",
     "origin": "Western Ghats Bio-Reserve, India",
     "isBestSeller": true,
     "isNew": false
@@ -82,17 +102,28 @@
     "rating": 4.95,
     "reviewsCount": 192,
     "inStock": true,
-    "weightOptions": ["250g", "500g", "1kg"],
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
     "defaultWeight": "500g",
-    "badges": ["High Altitude", "Rock Cliff Harvest", "Bestseller"],
-    "image": "/images/malai_thean_bottle.jpg",
+    "badges": [
+      "High Altitude",
+      "Rock Cliff Harvest",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563531964-524df0.webp",
     "gallery": [
-      "/images/malai_thean_bottle.jpg",
-      "/images/natural_honey_jar.jpg",
-      "/images/honeycomb_macro.jpg"
+      "/uploads/1-1794563531964-524df0.webp",
+      "/uploads/2-1794563565911-79553c.webp",
+      "/uploads/3-1794563541407-c59174.webp",
+      "/uploads/4-1794563589757-69b081.webp"
     ],
     "description": "Harvested ethically from giant wild rock bee colonies (Apis dorsata) nestled high in cliff precipices of the Eastern and Western Ghats. Malai Thean carries a rich, deep woody aroma and unparalleled therapeutic potency derived from wild medicinal hill herbs and tall mountain tree canopies.",
-    "ingredients": ["100% Pure Rock Cliff Mountain Honey"],
+    "ingredients": [
+      "100% Pure Rock Cliff Mountain Honey"
+    ],
     "keyBenefits": [
       "Contains high trace minerals: Iron, Zinc, Potassium, and Magnesium",
       "Promotes digestive wellness and gut microbiome balance",
@@ -100,7 +131,6 @@
       "Traditional Ayurvedic remedy for deep vitality and cellular rejuvenation"
     ],
     "howToUse": "Consume 1 tablespoon with lukewarm milk at night or with warm herbal decoctions. Ideal for daily sweetening.",
-    "storageInfo": "Store at room temperature in the airtight glass jar provided. Never refrigerate.",
     "origin": "Kolli Hills & Nilgiri Foothills",
     "isBestSeller": true,
     "isNew": false
@@ -117,17 +147,31 @@
     "rating": 4.85,
     "reviewsCount": 116,
     "inStock": true,
-    "weightOptions": ["250g", "500g", "1kg"],
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
     "defaultWeight": "250g",
-    "badges": ["Sun Matured", "No Refined Sugar", "Bestseller"],
-    "image": "/images/banaya_rose_gulkand.jpg",
+    "badges": [
+      "Sun Matured",
+      "No Refined Sugar",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563612090-18914b.png",
     "gallery": [
-      "/images/banaya_rose_gulkand.jpg",
-      "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=1000&q=80"
+      "/uploads/1-1794563612090-18914b.png",
+      "/uploads/2-1794563615341-e99592.webp",
+      "/uploads/3-1794563621432-24da2f.webp"
     ],
     "description": "Slowly sun-cooked for 45 days in traditional glass containers using aromatic indigenous Damask Rose (Chaiti Gulab) petals, natural rock sugar (Dhaga Mishri), and pure raw honey. This authentic Ayurvedic preparation acts as a natural body coolant and digestive rejuvenator.",
-    "ingredients": ["Fresh Native Damask Rose Petals (Rosa damascena)", "Unrefined Rock Sugar (Mishri)", "Raw Forest Honey", "Cardamom Seeds", "Praval Pishti Traces"],
+    "ingredients": [
+      "Fresh Native Damask Rose Petals (Rosa damascena)",
+      "Unrefined Rock Sugar (Mishri)",
+      "Raw Forest Honey",
+      "Cardamom Seeds",
+      "Praval Pishti Traces"
+    ],
     "keyBenefits": [
       "Pacifies excess Pitta, reducing body heat, acidity, and fatigue",
       "Alleviates acid reflux, bloating, and stomach inflammation",
@@ -135,7 +179,6 @@
       "Improves sleep quality and calms the nervous system"
     ],
     "howToUse": "Take 1 to 2 teaspoons directly twice daily after meals, or blend into chilled milk to make a refreshing rose beverage.",
-    "storageInfo": "Store in a cool dry place away from moisture. Always use a dry wooden or stainless steel spoon.",
     "origin": "Pushkar & Thanjavur Rose Gardens",
     "isBestSeller": true,
     "isNew": false
@@ -152,17 +195,30 @@
     "rating": 4.88,
     "reviewsCount": 94,
     "inStock": true,
-    "weightOptions": ["250g", "500g", "1kg"],
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
     "defaultWeight": "500g",
-    "badges": ["Vitamin C Rich", "Digestive Tonic", "Bestseller"],
-    "image": "/images/banaya_amla.webp",
+    "badges": [
+      "Vitamin C Rich",
+      "Digestive Tonic",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563705389-04f550.webp",
     "gallery": [
-      "/images/banaya_amla.webp",
-      "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=1000&q=80",
-      "/images/natural_honey_jar.jpg"
+      "/uploads/1-1794563705389-04f550.webp",
+      "/uploads/2-1794563709771-3a4eca.webp",
+      "/uploads/3-1794563714119-83c12b.webp"
     ],
     "description": "Whole organic wild Indian Gooseberries (Amla / Nellikai) pricked and steeped for months in pure raw multifloral honey. The natural astringency and sourness of fresh vitamin-rich Amla balances harmoniously with the sweet honey to create a delicious, therapeutic daily immunity booster.",
-    "ingredients": ["Fresh Mountain Amla (Phyllanthus emblica)", "Raw Forest Honey", "Cardamom", "Dry Ginger Extract"],
+    "ingredients": [
+      "Fresh Mountain Amla (Phyllanthus emblica)",
+      "Raw Forest Honey",
+      "Cardamom",
+      "Dry Ginger Extract"
+    ],
     "keyBenefits": [
       "Extremely rich source of bio-available Vitamin C and natural polyphenols",
       "Strengthens hair roots, delays premature graying, and promotes clear skin",
@@ -170,7 +226,6 @@
       "Supports healthy eyesight, hemoglobin levels, and cellular vitality"
     ],
     "howToUse": "Eat 1 to 2 soaked Amla pieces daily in the morning or after meals, sipping a spoonful of the infused honey syrup.",
-    "storageInfo": "Store in an airtight container at room temperature. Keep away from moisture.",
     "origin": "Dindigul & Salem Orchards",
     "isBestSeller": true,
     "isNew": false
@@ -187,16 +242,33 @@
     "rating": 4.92,
     "reviewsCount": 165,
     "inStock": true,
-    "weightOptions": ["250g", "500g", "1kg"],
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
     "defaultWeight": "500g",
-    "badges": ["High Protein", "Zero Preservatives", "Bestseller"],
-    "image": "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=800&q=80",
+    "badges": [
+      "High Protein",
+      "Zero Preservatives",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563763588-437fa3.webp",
     "gallery": [
-      "https://images.unsplash.com/photo-1599599810769-bcde5a160d32?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1000&q=80"
+      "/uploads/1-1794563763588-437fa3.webp",
+      "/uploads/2-1794563768964-77558a.webp",
+      "/uploads/3-1794563783373-d3ff2c.webp"
     ],
     "description": "A luxurious master-blend of hand-selected Kashmiri Mamra Almonds, W240 Goa Cashew Nuts, Iranian Green Pistachios, Chilean Walnuts, Afghan Black Raisins, and nutrient-dense Pumpkin & Sunflower Seeds. Lightly slow-roasted without oil to seal in crunch and essential fatty acids.",
-    "ingredients": ["Kashmiri Almonds", "Jumbo Cashews", "California Walnuts", "Green Pistachios", "Seedless Raisins", "Pumpkin Seeds", "Sunflower Seeds"],
+    "ingredients": [
+      "Kashmiri Almonds",
+      "Jumbo Cashews",
+      "California Walnuts",
+      "Green Pistachios",
+      "Seedless Raisins",
+      "Pumpkin Seeds",
+      "Sunflower Seeds"
+    ],
     "keyBenefits": [
       "Rich in Omega-3 fatty acids for cognitive and cardiovascular health",
       "Provides 8g+ of clean plant protein and dietary fiber per serving",
@@ -204,7 +276,6 @@
       "Zero trans fats, zero added salt, completely non-GMO"
     ],
     "howToUse": "Enjoy a handful (30g) as an energizing mid-day snack, breakfast topping for porridge, or blend into milk smoothies.",
-    "storageInfo": "Store in a sealed airtight jar in a cool place or refrigerator to maintain crispness and preserve natural oils.",
     "origin": "Kashmir, Goa & Global Organic Orchards",
     "isBestSeller": true,
     "isNew": false
@@ -221,14 +292,23 @@
     "rating": 4.96,
     "reviewsCount": 210,
     "inStock": true,
-    "weightOptions": ["100g", "250g", "500g"],
+    "weightOptions": [
+      "100g",
+      "250g",
+      "500g"
+    ],
     "defaultWeight": "100g",
-    "badges": ["100% Natural", "No Artificial Flavours", "No Added Preservatives", "Bestseller"],
-    "image": "/images/abc_malt_front.jpg",
+    "badges": [
+      "100% Natural",
+      "No Artificial Flavours",
+      "No Added Preservatives",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563826283-d5bb35.webp",
     "gallery": [
-      "/images/abc_malt_front.jpg",
-      "/images/abc_malt_back.jpg",
-      "/images/abc_malt_poster.jpg"
+      "/uploads/1-1794563826283-d5bb35.webp",
+      "/uploads/2-1794563830588-b2e495.webp",
+      "/uploads/3-1794563835591-f5fb5f.webp"
     ],
     "description": "Banaya Enterprise Abc Malt is a wholesome blend of Apple, Beetroot, Carrot, Dates, Nuts & Seeds, Makhana, and Cane Jaggery. 100% natural, healthy, tasty, and nutritious for the entire family with zero added preservatives and no artificial flavours.",
     "ingredients": [
@@ -248,7 +328,6 @@
       "Detoxifies the body naturally"
     ],
     "howToUse": "1. Add 1-2 teaspoon malt into a cup.\n2. Add 150ml of hot milk.\n3. Mix it well and enjoy your malt.",
-    "storageInfo": "Store in an airtight pouch or container in a cool, dry place. Seal tightly after each use.",
     "origin": "Banayana Enterprise Certified Facility",
     "isBestSeller": true,
     "isNew": false
@@ -265,16 +344,26 @@
     "rating": 4.97,
     "reviewsCount": 230,
     "inStock": true,
-    "weightOptions": ["400ml", "1 Litre"],
+    "weightOptions": [
+      "400ml",
+      "1 Litre"
+    ],
     "defaultWeight": "400ml",
-    "badges": ["A2 Certified", "Bilona Churned", "Bestseller"],
-    "image": "https://images.unsplash.com/photo-1631709497146-a239ef373cf1?auto=format&fit=crop&w=800&q=80",
+    "badges": [
+      "A2 Certified",
+      "Bilona Churned",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563904747-d5dbde.png",
     "gallery": [
-      "https://images.unsplash.com/photo-1631709497146-a239ef373cf1?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1589927986089-35812388d1f4?auto=format&fit=crop&w=1000&q=80"
+      "/uploads/1-1794563904747-d5dbde.png",
+      "/uploads/2-1794563908567-d79a63.webp",
+      "/uploads/3-1794563912577-9a81d9.webp"
     ],
     "description": "Prepared strictly through the ancient Vedic Bilona method: fresh whole milk from freely-grazed indigenous Indian Gir & Kangayam cows is cultured into curd, hand-churned with a wooden churner (Bilona) to separate cultured butter (Makkhan), and slow-boiled in brass cauldrons with moringa leaves to yield fragrant granular golden ghee.",
-    "ingredients": ["100% Cultured Grass-Fed Desi Cow Milk Fat (A2 Beta-Casein)"],
+    "ingredients": [
+      "100% Cultured Grass-Fed Desi Cow Milk Fat (A2 Beta-Casein)"
+    ],
     "keyBenefits": [
       "Rich in fat-soluble vitamins (A, D, E, K2) and healthy Butyric Acid",
       "Lubricates joints, nourishes brain tissues, and enhances digestion (Agni)",
@@ -282,7 +371,6 @@
       "100% free from preservatives, colors, and synthetic additives"
     ],
     "howToUse": "Drizzle 1 teaspoon over hot steamed rice, dosas, rotis, or lentil dal. Highly recommended for daily Ayurvedic cooking and infant nutrition.",
-    "storageInfo": "Store in the glass container in a cool pantry. Avoid wet utensils. Shelf life: 12 months.",
     "origin": "Vedic Organic Gaushala, Tamil Nadu",
     "isBestSeller": true,
     "isNew": false
@@ -299,16 +387,33 @@
     "rating": 4.82,
     "reviewsCount": 88,
     "inStock": true,
-    "weightOptions": ["100g", "Pack of 3 (300g)", "Pack of 5 (500g)"],
+    "weightOptions": [
+      "100g",
+      "Pack of 3 (300g)",
+      "Pack of 5 (500g)"
+    ],
     "defaultWeight": "100g",
-    "badges": ["SLS & Paraben Free", "Cold Processed", "Bestseller"],
-    "image": "https://images.unsplash.com/photo-1607006314647-79754f9a0c00?auto=format&fit=crop&w=800&q=80",
+    "badges": [
+      "SLS & Paraben Free",
+      "Cold Processed",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794563951103-163478.png",
     "gallery": [
-      "https://images.unsplash.com/photo-1607006314647-79754f9a0c00?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1608248597359-53e3cb8d234c?auto=format&fit=crop&w=1000&q=80"
+      "/uploads/1-1794563951103-163478.png",
+      "/uploads/2-1794563954923-418957.webp",
+      "/uploads/3-1794563960018-ac57c7.webp"
     ],
     "description": "Cured naturally for 6 weeks, this artisanal cold-process bathing bar is formulated with pure wood-pressed coconut oil, fresh crushed neem leaves, sacred holy basil (Tulsi), raw turmeric, and unrefined Shea butter. Gently cleanses without stripping essential skin moisture.",
-    "ingredients": ["Wood-Pressed Virgin Coconut Oil", "Pure Castor Oil", "Raw Shea Butter", "Fresh Neem Leaf Extract (Azadirachta indica)", "Holy Tulsi Extract", "Wild Turmeric Essential Oil", "Sandalwood Aroma"],
+    "ingredients": [
+      "Wood-Pressed Virgin Coconut Oil",
+      "Pure Castor Oil",
+      "Raw Shea Butter",
+      "Fresh Neem Leaf Extract (Azadirachta indica)",
+      "Holy Tulsi Extract",
+      "Wild Turmeric Essential Oil",
+      "Sandalwood Aroma"
+    ],
     "keyBenefits": [
       "Natural antibacterial and antifungal protection for daily hygiene",
       "Calms skin irritation, back acne, and body odors naturally",
@@ -316,7 +421,6 @@
       "Zero palm oil, zero chemical fragrances, biodegradable and safe for all skin types"
     ],
     "howToUse": "Lather between wet palms or with a natural loofah, apply all over body during bath or shower, and rinse clean with water.",
-    "storageInfo": "Keep on a draining soap dish between uses to prolong bar life.",
     "origin": "Auroville Artisanal Workshop",
     "isBestSeller": true,
     "isNew": false
@@ -333,14 +437,22 @@
     "rating": 4.88,
     "reviewsCount": 95,
     "inStock": true,
-    "weightOptions": ["100g", "200g (Pack of 2)", "500g (Pack of 5)"],
+    "weightOptions": [
+      "100g",
+      "200g (Pack of 2)",
+      "500g (Pack of 5)"
+    ],
     "defaultWeight": "100g",
-    "badges": ["Joint Flexibility", "100g Authentic Pack", "Bestseller"],
-    "image": "/images/mudavatukal_soup_front.jpeg",
+    "badges": [
+      "Joint Flexibility",
+      "100g Authentic Pack",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794564012891-177d52.webp",
     "gallery": [
-      "/images/mudavatukal_soup_front.jpeg",
-      "/images/mudavatukal_soup_back.jpeg",
-      "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=1000&q=80"
+      "/uploads/1-1794564012891-177d52.webp",
+      "/uploads/2-1794564017234-eef357.webp",
+      "/uploads/3-1794564051250-535801.webp"
     ],
     "description": "Authentic Banaya Enterprises Mudavattukkal Soup Mix prepared with traditional Western Ghats Mudavattukal (Drynaria quercifolia / Oak-leaf fern rhizome) blended with wholesome moong dal and native spices. Highly esteemed in Siddha and folk traditions for relieving knee pain, joint stiffness, reducing inflammation, and maintaining healthy mobility.",
     "ingredients": [
@@ -363,7 +475,6 @@
       "Has potent natural anti-inflammatory properties"
     ],
     "howToUse": "Mix 5g of soup powder with 100ml water in a kettle and boil for one minute.",
-    "storageInfo": "Keep in dry, cool and hygienic place. Best before 6 months.",
     "origin": "Banaya Enterprises, Boothapandy, Thovalai (FSSAI: 22423089000272)",
     "isBestSeller": true,
     "isNew": false
@@ -380,13 +491,22 @@
     "rating": 4.93,
     "reviewsCount": 172,
     "inStock": true,
-    "weightOptions": ["250g", "500g", "1kg"],
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
     "defaultWeight": "250g",
-    "badges": ["High Anthocyanin", "Low Glycemic", "Bestseller"],
-    "image": "/images/karuppu_kavuni_kanji_front.jpg",
+    "badges": [
+      "High Anthocyanin",
+      "Low Glycemic",
+      "Bestseller"
+    ],
+    "image": "/uploads/1-1794564103017-e8ed7f.webp",
     "gallery": [
-      "/images/karuppu_kavuni_kanji_front.jpg",
-      "/images/karuppu_kavuni_kanji_back.jpg"
+      "/uploads/1-1794564103017-e8ed7f.webp",
+      "/uploads/2-1794564108711-15b99c.webp",
+      "/uploads/3-1794564133074-a4fdae.webp"
     ],
     "description": "Banaya Enterprise Karuppu Kavuni Kanji Mix is an authentic traditional heritage porridge blend crafted from Ancient Karupu kavuni black rice, Poongar rice, Karuppu kollu, Pearl millet, Pepper, Moong dal, Jeera, and Garlic. Healthy, tasty, and nutritious mix for the whole family.",
     "ingredients": [
@@ -406,7 +526,6 @@
       "Helps reduce cholesterol and maintain heart wellness"
     ],
     "howToUse": "1. Add 2 tsp of porridge mix in 1.5 glass of water.\n2. Add a pinch of salt & stir well.\n3. Cook for 5 mins in low heat.\n4. Add Buttermilk before consume.",
-    "storageInfo": "Store in an airtight steel or glass jar.",
     "origin": "Chettinad Organic Paddy Fields",
     "isBestSeller": true,
     "isNew": false
@@ -423,13 +542,22 @@
     "rating": 4.92,
     "reviewsCount": 118,
     "inStock": true,
-    "weightOptions": ["100g", "250g", "500g"],
+    "weightOptions": [
+      "100g",
+      "250g",
+      "500g"
+    ],
     "defaultWeight": "100g",
-    "badges": ["Hair Health & Iron", "100% Shade Dried", "New"],
-    "image": "/images/curry_leaf_pouch_front.jpg",
+    "badges": [
+      "Hair Health & Iron",
+      "100% Shade Dried",
+      "New"
+    ],
+    "image": "/uploads/1-1794565636176-e6c2b7.webp",
     "gallery": [
-      "/images/curry_leaf_pouch_front.jpg",
-      "/images/curry_leaf_powder.jpg"
+      "/uploads/1-1794565636176-e6c2b7.webp",
+      "/uploads/2-1794565641477-29f72f.webp",
+      "/uploads/3-1794565647647-33bccf.webp"
     ],
     "description": "Banaya Enterprises Organic Curry Leaf Powder (Kariveppilai) is 100% organic, gluten-free, with no additives. Formulated to support digestion, metabolic health, and natural beauty. Handpicked fresh leaves shade-dried to retain volatile essential nutrients and bioavailable minerals.",
     "ingredients": [
@@ -443,7 +571,6 @@
       "Clean & plant-based, 100% organic, gluten-free with no additives"
     ],
     "howToUse": "Suggested to use: 1 teaspoon curry leaf powder in 100 ml of hot water. Mix well and drink, or sprinkle into meals, hot rice with ghee, dosas, and chutneys.",
-    "storageInfo": "Store in an airtight container in a cool, dry place away from direct sunlight.",
     "origin": "Banaya Enterprises Organic Groves, Tamil Nadu (FSSAI: 22426089000267)",
     "isBestSeller": true,
     "isNew": true
@@ -460,13 +587,22 @@
     "rating": 4.96,
     "reviewsCount": 146,
     "inStock": true,
-    "weightOptions": ["100g", "250g", "500g"],
+    "weightOptions": [
+      "100g",
+      "250g",
+      "500g"
+    ],
     "defaultWeight": "100g",
-    "badges": ["Organic Superfood", "Immunity & Eye Health", "New"],
-    "image": "/images/murungai_pouch_front.jpg",
+    "badges": [
+      "Organic Superfood",
+      "Immunity & Eye Health",
+      "New"
+    ],
+    "image": "/uploads/1-1794565679141-32cb63.webp",
     "gallery": [
-      "/images/murungai_pouch_front.jpg",
-      "/images/murungai_leaf_powder.jpg"
+      "/uploads/1-1794565679141-32cb63.webp",
+      "/uploads/2-1794565685738-a01c89.webp",
+      "/uploads/3-1794565693979-809b6c.webp"
     ],
     "description": "Banaya Enterprises Organic Murungai Keerai Powder is prepared from carefully selected native drumstick moringa leaves. 100% organic, gluten-free, with no additives. Formulated to boost natural immunity and maintain good eye health.",
     "ingredients": [
@@ -479,7 +615,6 @@
       "100% organic, gluten-free, and free from any synthetic additives"
     ],
     "howToUse": "Mix 1/2 to 1 teaspoon in warm water, herbal tea, soup, or fresh buttermilk. Can also be blended into idli/dosa batter and daily cooking.",
-    "storageInfo": "Store in a cool, dry place. Seal zip-pouch or container tightly after each use.",
     "origin": "Banaya Enterprises Organic Groves, Tamil Nadu",
     "isBestSeller": true,
     "isNew": true

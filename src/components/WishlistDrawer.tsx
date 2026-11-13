@@ -18,7 +18,10 @@ export const WishlistDrawer: React.FC = () => {
   const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/60 backdrop-blur-xs flex justify-end animate-fadeIn">
+    <div
+      onClick={() => setActiveModal(null)}
+      className="fixed inset-0 z-50 overflow-hidden bg-slate-950/60 backdrop-blur-xs flex justify-end animate-fadeIn"
+    >
       
       {/* Slide-over Container */}
       <div 
@@ -76,7 +79,10 @@ export const WishlistDrawer: React.FC = () => {
                   alt={product.name}
                   onClick={() => openProductDetail(product)}
                   className={`w-16 h-16 rounded-xl border border-slate-200 shrink-0 cursor-pointer bg-slate-50 ${
-                    product.image.startsWith('/images/') || product.image.startsWith('/assets/')
+                    product.image.startsWith('/images/') ||
+                    product.image.startsWith('/assets/') ||
+                    product.image.startsWith('/uploads/') ||
+                    product.image.startsWith('data:image/')
                       ? 'object-contain p-1'
                       : 'object-cover'
                   }`}
@@ -105,13 +111,18 @@ export const WishlistDrawer: React.FC = () => {
 
                   <div className="flex items-center gap-2">
                     <button
+                      disabled={!product.inStock}
                       onClick={() => {
                         addToCart(product, 1, product.defaultWeight);
                       }}
-                      className="px-3 py-1.5 bg-[#064E3B] hover:bg-[#047857] text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+                        product.inStock
+                          ? 'bg-[#064E3B] hover:bg-[#047857] text-white cursor-pointer'
+                          : 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                      }`}
                     >
                       <ShoppingBag className="w-3 h-3 text-amber-300" />
-                      <span>Move to Bag</span>
+                      <span>{product.inStock ? 'Move to Bag' : 'Out of Stock'}</span>
                     </button>
                   </div>
                 </div>
@@ -121,16 +132,16 @@ export const WishlistDrawer: React.FC = () => {
         </div>
 
         {/* Footer */}
-        {wishlistProducts.length > 0 && (
+        {wishlistProducts.some(p => p.inStock) && (
           <div className="p-5 bg-white border-t border-slate-200">
             <button
               onClick={() => {
-                wishlistProducts.forEach(p => addToCart(p, 1, p.defaultWeight));
+                wishlistProducts.filter(p => p.inStock).forEach(p => addToCart(p, 1, p.defaultWeight));
                 setActiveModal('cart');
               }}
               className="w-full py-3 bg-[#064E3B] hover:bg-[#047857] text-white rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
             >
-              <span>Add All to Cart</span>
+              <span>Add All In-Stock to Cart</span>
               <ArrowRight className="w-4 h-4 text-amber-300" />
             </button>
           </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, Heart, User, Menu, X, Sparkles, Phone, ShieldCheck, ChevronRight, Truck, KeyRound } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, Menu, X, Sparkles, Phone, ChevronRight, Truck, KeyRound } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 export const Header: React.FC = () => {
-  const { cartCount, wishlist, setActiveModal, setSelectedCategory, setSearchQuery } = useShop();
+  const { cartCount, wishlist, setActiveModal, setSelectedCategory } = useShop();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

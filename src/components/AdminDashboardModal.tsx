@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import {
-  ShieldCheck, Lock, KeyRound, Eye, EyeOff, LayoutDashboard, Package,
-  Users, ShoppingBag, TrendingUp, Search, Filter, Plus, Edit2, Trash2,
-  CheckCircle2, Clock, Truck, AlertCircle, X, Save, RefreshCw, ChevronRight,
-  ExternalLink, Phone, Mail, MapPin, DollarSign, ArrowUpRight, BarChart3,
-  Calendar, Check, AlertTriangle, ShieldAlert, Sparkles, MessageCircle, LogOut,
-  SlidersHorizontal, CheckSquare, Layers, FileSpreadsheet, Upload, Image as ImageIcon,
-  Camera, CheckCheck
+  Lock, Eye, EyeOff, LayoutDashboard, Package,
+  Users, ShoppingBag, TrendingUp, Search, Plus, Edit2, Trash2,
+  CheckCircle2, Truck, AlertCircle, X, Save, ChevronRight,
+  ExternalLink, Phone, Mail, MapPin, DollarSign,
+  Check, MessageCircle, LogOut,
+  Layers, FileSpreadsheet, Upload, Image as ImageIcon,
+  Camera
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { Product, Order } from '../types';
@@ -62,14 +62,17 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
     updateOrderStatus,
     deleteOrder,
     adminNotes,
-    setAdminNotesForOrder,
     showToast,
     serverSynced
   } = useShop();
 
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('banaya_admin_auth') === 'true';
+    try {
+      return sessionStorage.getItem('banaya_admin_auth') === 'true';
+    } catch {
+      return false;
+    }
   });
   const [passkeyInput, setPasskeyInput] = useState('');
   const [passkeyError, setPasskeyError] = useState(false);
@@ -98,12 +101,20 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isSavingProduct, setIsSavingProduct] = useState(false);
 
+  // Inline Delete Confirmation States (iframe-safe replacement for browser confirm())
+  const [confirmDeleteOrderId, setConfirmDeleteOrderId] = useState<string | null>(null);
+  const [confirmDeleteProductId, setConfirmDeleteProductId] = useState<string | null>(null);
+
   // Handle Login
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (passkeyInput === ADMIN_PASSKEY) {
       setIsAuthenticated(true);
-      sessionStorage.setItem('banaya_admin_auth', 'true');
+      try {
+        sessionStorage.setItem('banaya_admin_auth', 'true');
+      } catch {
+        // Ignore storage errors in sandboxed iframes
+      }
       setPasskeyError(false);
       setPasskeyInput('');
       showToast('Admin Authorized', 'Welcome to Banaya Enterprise Admin Portal', 'success');
@@ -115,7 +126,11 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   // Handle Logout
   const handleLogout = () => {
     setIsAuthenticated(false);
-    sessionStorage.removeItem('banaya_admin_auth');
+    try {
+      sessionStorage.removeItem('banaya_admin_auth');
+    } catch {
+      // Ignore storage errors in sandboxed iframes
+    }
     showToast('Admin Signed Out', 'Secure session ended.', 'info');
   };
 
@@ -123,7 +138,6 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
   const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
   const totalOrders = orders.length;
   const pendingOrders = orders.filter(o => o.status === 'Processing' || o.status === 'Confirmed').length;
-  const deliveredOrders = orders.filter(o => o.status === 'Delivered').length;
   const lowStockProducts = products.filter(p => !p.inStock).length;
 
   // Aggregate Customer Profiles from all orders
@@ -413,7 +427,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
       keyBenefits: ['Supports natural immunity', 'Zero chemical additives or synthetic preservatives'],
       howToUse: 'Consume 1-2 teaspoons daily with warm milk or water.',
       origin: 'Banaya Enterprise, Tamil Nadu',
-      isBestSeller: false,
+      isBestSeller: true,
       isNew: true
     });
   };
@@ -526,6 +540,22 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                 <span className={`w-2 h-2 rounded-full ${serverSynced ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
                 <span>{serverSynced ? 'Live Store Sync Active' : 'Local Mode'}</span>
               </span>
+            )}
+            {isAuthenticated && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  setTimeout(() => {
+                    document.getElementById('shop-products')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 120);
+                }}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-xs font-bold text-slate-950 transition-colors cursor-pointer shadow-xs"
+                title="Jump to Live Website Product Catalog"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>View Live Website</span>
+              </button>
             )}
             {isAuthenticated && (
               <button
@@ -1021,29 +1051,51 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                                     </div>
                                   )}
                                 </td>
-                                <td className="py-3.5 px-4 text-right space-x-1 whitespace-nowrap">
-                                  <button
-                                    onClick={() => {
-                                      setSelectedOrder(ord);
-                                      setNewStatus(ord.status);
-                                      setNewTracking(ord.trackingNumber);
-                                      setOrderNoteInput(adminNotes?.[ord.id] || '');
-                                    }}
-                                    className="px-2.5 py-1 bg-[#064E3B] hover:bg-[#047857] text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
-                                  >
-                                    Update
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      if (confirm(`Are you sure you want to delete order ${ord.id}?`)) {
-                                        deleteOrder(ord.id);
-                                      }
-                                    }}
-                                    className="p-1 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
-                                    title="Delete Order Record"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
+                                <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                                  <div className="inline-flex items-center justify-end gap-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setSelectedOrder(ord);
+                                        setNewStatus(ord.status);
+                                        setNewTracking(ord.trackingNumber);
+                                        setOrderNoteInput(adminNotes?.[ord.id] || '');
+                                      }}
+                                      className="px-2.5 py-1 bg-[#064E3B] hover:bg-[#047857] text-white font-bold rounded-lg text-xs cursor-pointer transition-colors"
+                                    >
+                                      Update
+                                    </button>
+                                    {confirmDeleteOrderId === ord.id ? (
+                                      <div className="inline-flex items-center gap-1 bg-rose-50 border border-rose-200 rounded-lg px-1.5 py-0.5">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            deleteOrder(ord.id);
+                                            setConfirmDeleteOrderId(null);
+                                          }}
+                                          className="px-2 py-0.5 bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold rounded cursor-pointer"
+                                        >
+                                          Delete
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => setConfirmDeleteOrderId(null)}
+                                          className="px-1.5 py-0.5 text-slate-600 hover:text-slate-900 text-[10px] font-bold cursor-pointer"
+                                        >
+                                          Cancel
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => setConfirmDeleteOrderId(ord.id)}
+                                        className="p-1 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                                        title="Delete Order Record"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    )}
+                                  </div>
                                 </td>
                               </tr>
                             ))
@@ -1398,13 +1450,9 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
 
                                 <td className="py-3 px-4">
                                   <button
+                                    type="button"
                                     onClick={() => {
                                       updateProduct({ ...prod, inStock: !prod.inStock });
-                                      showToast(
-                                        prod.inStock ? 'Marked Out of Stock' : 'Marked In Stock', 
-                                        `${prod.name} is now ${prod.inStock ? 'hidden from purchase' : 'available for order'}.`, 
-                                        'info'
-                                      );
                                     }}
                                     className={`px-2.5 py-1 rounded-full text-[10px] font-bold cursor-pointer transition-colors ${
                                       prod.inStock
@@ -1422,25 +1470,47 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                                   <span className="text-[10px] text-slate-400 block">({prod.reviewsCount} reviews)</span>
                                 </td>
 
-                                <td className="py-3 px-4 text-right space-x-1.5 whitespace-nowrap">
-                                  <button
-                                    onClick={() => handleStartEditProduct(prod)}
-                                    className="px-3 py-1.5 bg-[#064E3B] hover:bg-[#047857] text-white font-bold rounded-lg text-xs cursor-pointer transition-colors inline-flex items-center gap-1.5 shadow-2xs"
-                                  >
-                                    <Edit2 className="w-3 h-3 text-amber-300" />
-                                    <span>Modify</span>
-                                  </button>
-                                  <button
-                                    onClick={() => {
-                                      if (confirm(`Are you sure you want to delete ${prod.name}? This will remove it from the store catalog.`)) {
-                                        deleteProduct(prod.id);
-                                      }
-                                    }}
-                                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
-                                    title="Delete Product"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
+                                <td className="py-3 px-4 text-right whitespace-nowrap">
+                                  <div className="inline-flex items-center justify-end gap-1.5">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleStartEditProduct(prod)}
+                                      className="px-3 py-1.5 bg-[#064E3B] hover:bg-[#047857] text-white font-bold rounded-lg text-xs cursor-pointer transition-colors inline-flex items-center gap-1.5 shadow-2xs"
+                                    >
+                                      <Edit2 className="w-3 h-3 text-amber-300" />
+                                      <span>Modify</span>
+                                    </button>
+                                    {confirmDeleteProductId === prod.id ? (
+                                      <div className="inline-flex items-center gap-1 bg-rose-50 border border-rose-200 rounded-lg px-1.5 py-0.5">
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            deleteProduct(prod.id);
+                                            setConfirmDeleteProductId(null);
+                                          }}
+                                          className="px-2 py-0.5 bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold rounded cursor-pointer"
+                                        >
+                                          Delete
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => setConfirmDeleteProductId(null)}
+                                          className="px-1.5 py-0.5 text-slate-600 hover:text-slate-900 text-[10px] font-bold cursor-pointer"
+                                        >
+                                          Cancel
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => setConfirmDeleteProductId(prod.id)}
+                                        className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                                        title="Delete Product"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    )}
+                                  </div>
                                 </td>
                               </tr>
                             );
@@ -2053,6 +2123,28 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                           placeholder="Short marketing catchphrase"
                           className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:border-emerald-600"
                         />
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-4 pt-1">
+                        <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!productForm.isBestSeller}
+                            onChange={(e) => setProductForm({ ...productForm, isBestSeller: e.target.checked })}
+                            className="w-4 h-4 accent-[#064E3B] rounded cursor-pointer"
+                          />
+                          <span>Feature on Storefront (Best Seller)</span>
+                        </label>
+
+                        <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!productForm.isNew}
+                            onChange={(e) => setProductForm({ ...productForm, isNew: e.target.checked })}
+                            className="w-4 h-4 accent-[#064E3B] rounded cursor-pointer"
+                          />
+                          <span>Highlight as New Launch</span>
+                        </label>
                       </div>
                     </div>
 

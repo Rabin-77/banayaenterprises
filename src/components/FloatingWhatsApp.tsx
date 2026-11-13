@@ -10,7 +10,7 @@ export const FloatingWhatsApp: React.FC = () => {
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
       {/* Popover Bubble */}
       {isOpen && (
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 w-72 mb-2 animate-in fade-in slide-in-from-bottom-2 duration-200">
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-4 w-72 mb-2 animate-slideUp">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-[#25D366] text-white flex items-center justify-center">

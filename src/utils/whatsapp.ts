@@ -1,4 +1,5 @@
 import { Order, Product } from '../types';
+import { getPriceForProductWeight } from './pricing';
 
 export const WHATSAPP_CONTACT_NUMBER = '918838598172';
 export const DISPLAY_PHONE_NUMBER = '+91 883 859 8172';
@@ -10,7 +11,8 @@ export const BANAYA_UPI_ID = 'banayaenterprise100-1@oksbi';
 export function formatOrderWhatsAppMessage(order: Order, transactionId?: string): string {
   const itemsText = order.items
     .map((item, idx) => {
-      const price = item.product.price * item.quantity;
+      const unitPrice = getPriceForProductWeight(item.product, item.selectedWeight).price;
+      const price = unitPrice * item.quantity;
       return `${idx + 1}. *${item.product.name}* (${item.selectedWeight}) × ${item.quantity} = ₹${price}`;
     })
     .join('\n');
@@ -115,9 +117,16 @@ export function getProductBookingWhatsAppUrl(params: {
 }
 
 /**
- * Opens WhatsApp in a new tab/window with safety fallback.
+ * Opens WhatsApp in a new tab cleanly without triggering blocked window.open popups.
  */
 export function openWhatsAppUrl(url: string): void {
-  window.open(url, '_blank', 'noopener,noreferrer');
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  anchor.style.display = 'none';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
 }
 

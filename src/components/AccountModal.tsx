@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { 
-  X, User, Package, Award, MapPin, Heart, 
-  ChevronRight, Sparkles, Clock, CheckCircle2, Truck, ShieldCheck,
-  MessageCircle
+  X, Package, Award, Sparkles, Truck, MessageCircle
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { getOrderWhatsAppUrl, openWhatsAppUrl } from '../utils/whatsapp';
+import { getPriceForProductWeight } from '../utils/pricing';
 
 export const AccountModal: React.FC = () => {
   const { 
     orders, 
     activeModal, 
     setActiveModal, 
-    wishlist, 
-    products 
+    openOrderTracking 
   } = useShop();
 
   const [activeTab, setActiveTab] = useState<'orders' | 'profile' | 'addresses'>('orders');
@@ -21,7 +19,10 @@ export const AccountModal: React.FC = () => {
   if (activeModal !== 'account') return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 md:p-6 animate-fadeIn">
+    <div
+      onClick={() => setActiveModal(null)}
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 md:p-6 animate-fadeIn"
+    >
       
       <div 
         id="account-modal-container"
@@ -138,15 +139,29 @@ export const AccountModal: React.FC = () => {
 
                     {/* Order Items Preview */}
                     <div className="space-y-2">
-                      {order.items.map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between text-xs text-slate-600">
-                          <div className="flex items-center gap-2">
-                            <img src={item.product.image} alt={item.product.name} className="w-8 h-8 rounded-md object-cover border border-slate-200" />
-                            <span>{item.product.name} ({item.selectedWeight}) × {item.quantity}</span>
+                      {order.items.map((item, idx) => {
+                        const unitPrice = getPriceForProductWeight(item.product, item.selectedWeight).price;
+                        const isContain =
+                          item.product.image.startsWith('/images/') ||
+                          item.product.image.startsWith('/assets/') ||
+                          item.product.image.startsWith('/uploads/') ||
+                          item.product.image.startsWith('data:image/');
+                        return (
+                          <div key={idx} className="flex items-center justify-between text-xs text-slate-600">
+                            <div className="flex items-center gap-2">
+                              <img
+                                src={item.product.image}
+                                alt={item.product.name}
+                                className={`w-8 h-8 rounded-md border border-slate-200 bg-slate-50 ${
+                                  isContain ? 'object-contain p-0.5' : 'object-cover'
+                                }`}
+                              />
+                              <span>{item.product.name} ({item.selectedWeight}) × {item.quantity}</span>
+                            </div>
+                            <span className="font-semibold text-slate-950">₹{unitPrice * item.quantity}</span>
                           </div>
-                          <span className="font-semibold text-slate-950">₹{item.product.price * item.quantity}</span>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
 
                     {/* Tracking & WhatsApp Actions */}
@@ -166,9 +181,7 @@ export const AccountModal: React.FC = () => {
                           <MessageCircle className="w-3.5 h-3.5 fill-[#25D366] text-[#25D366]" /> Send to WhatsApp
                         </button>
                         <button
-                          onClick={() => {
-                            setActiveModal('trackOrder');
-                          }}
+                          onClick={() => openOrderTracking(order.id)}
                           className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
                         >
                           <Truck className="w-3.5 h-3.5 text-emerald-700" /> Track Order

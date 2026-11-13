@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Phone, Mail, MapPin, Instagram, Facebook, Youtube, 
-  MessageCircle, ShieldCheck, Heart, Sparkles, ChevronRight, X, KeyRound 
+  MessageCircle, ChevronRight, X, KeyRound 
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { ScrollReveal } from './ScrollReveal';

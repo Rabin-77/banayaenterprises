@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X, Star, ArrowRight, Sparkles, ShoppingBag } from 'lucide-react';
+import { Search, X, ArrowRight } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
+import { Product } from '../types';
 
 export const SearchModal: React.FC = () => {
   const { 
@@ -14,8 +15,6 @@ export const SearchModal: React.FC = () => {
 
   const [term, setTerm] = useState('');
 
-  if (activeModal !== 'search') return null;
-
   const searchResults = useMemo(() => {
     if (!term.trim()) return [];
     const q = term.toLowerCase().trim();
@@ -27,6 +26,8 @@ export const SearchModal: React.FC = () => {
       p.ingredients.some(ing => ing.toLowerCase().includes(q))
     );
   }, [term, products]);
+
+  if (activeModal !== 'search') return null;
 
   const popularTags = [
     'Raw Honey',
@@ -42,7 +43,7 @@ export const SearchModal: React.FC = () => {
     setTerm(tag);
   };
 
-  const handleSelectProduct = (product: any) => {
+  const handleSelectProduct = (product: Product) => {
     setActiveModal(null);
     openProductDetail(product);
   };
@@ -57,7 +58,10 @@ export const SearchModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-start justify-center pt-16 sm:pt-24 p-4 animate-fadeIn">
+    <div
+      onClick={() => setActiveModal(null)}
+      className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-xs flex items-start justify-center pt-16 sm:pt-24 p-4 animate-fadeIn"
+    >
       
       <div 
         id="search-modal-container"
@@ -206,7 +210,10 @@ export const SearchModal: React.FC = () => {
                         src={product.image}
                         alt={product.name}
                         className={`w-12 h-12 rounded-lg border border-slate-200 shrink-0 bg-white ${
-                          product.image.startsWith('/images/') || product.image.startsWith('/assets/')
+                          product.image.startsWith('/images/') ||
+                          product.image.startsWith('/assets/') ||
+                          product.image.startsWith('/uploads/') ||
+                          product.image.startsWith('data:image/')
                             ? 'object-contain p-0.5'
                             : 'object-cover'
                         }`}

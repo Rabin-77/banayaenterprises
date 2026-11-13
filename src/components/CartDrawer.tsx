@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { 
   X, Trash2, ShoppingBag, ArrowRight, ShieldCheck, 
-  Truck, Tag, Sparkles, CheckCircle2 
+  Truck, Tag
 } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
-import { CartItem } from '../types';
 
 export const CartDrawer: React.FC = () => {
   const { 
@@ -46,7 +45,10 @@ export const CartDrawer: React.FC = () => {
   const progressPercent = Math.min(100, Math.round((cartSubtotal / freeShippingThreshold) * 100));
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/60 backdrop-blur-xs flex justify-end animate-fadeIn">
+    <div
+      onClick={() => setActiveModal(null)}
+      className="fixed inset-0 z-50 overflow-hidden bg-slate-950/60 backdrop-blur-xs flex justify-end animate-fadeIn"
+    >
       
       {/* Slide-over Sheet */}
       <div 
@@ -130,7 +132,10 @@ export const CartDrawer: React.FC = () => {
                     src={item.product.image}
                     alt={item.product.name}
                     className={`w-16 h-16 sm:w-18 sm:h-18 rounded-xl border border-slate-200 shrink-0 bg-slate-50 ${
-                      item.product.image.startsWith('/images/') || item.product.image.startsWith('/assets/')
+                      item.product.image.startsWith('/images/') ||
+                      item.product.image.startsWith('/assets/') ||
+                      item.product.image.startsWith('/uploads/') ||
+                      item.product.image.startsWith('data:image/')
                         ? 'object-contain p-1'
                         : 'object-cover'
                     }`}
@@ -219,7 +224,7 @@ export const CartDrawer: React.FC = () => {
                       type="text"
                       value={couponInput}
                       onChange={(e) => setCouponInput(e.target.value)}
-                      placeholder="Coupon (e.g. STARTONE10)"
+                      placeholder="Coupon (e.g. BANAYANA10)"
                       className="flex-1 px-3 py-2 bg-slate-50 text-slate-900 text-xs uppercase font-medium rounded-xl border border-slate-200 focus:outline-hidden focus:border-emerald-600"
                     />
                     <button

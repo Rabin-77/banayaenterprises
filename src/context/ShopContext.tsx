@@ -76,6 +76,9 @@ interface ShopContextType {
   // Quick View / Detail Navigation
   openProductDetail: (product: Product) => void;
   openQuickCheckout: (product: Product, weight?: string) => void;
+  trackingLookupId: string;
+  setTrackingLookupId: (orderId: string) => void;
+  openOrderTracking: (orderId: string) => void;
 
   // Product Management (Admin)
   updateProduct: (updatedProduct: Product) => Promise<void>;
@@ -118,6 +121,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const [selectedProductState, setSelectedProductState] = useState<Product | null>(null);
+  const [trackingLookupId, setTrackingLookupId] = useState<string>('STM-84920');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('featured');
@@ -156,13 +160,18 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
       // ignore
     }
+    const byId = (id: string, fallbackIdx: number) =>
+      PRODUCTS.find(p => p.id === id) || PRODUCTS[fallbackIdx] || PRODUCTS[0];
+
+    if (PRODUCTS.length === 0) return [];
+
     return [
       {
         id: 'STM-84920',
         date: '2026-11-10',
         items: [
-          { product: PRODUCTS[2], quantity: 1, selectedWeight: '500g' },
-          { product: PRODUCTS[6] || PRODUCTS[5], quantity: 2, selectedWeight: '100g' }
+          { product: byId('malai-thean', 2), quantity: 1, selectedWeight: '500g' },
+          { product: byId('abc-malt', 6), quantity: 2, selectedWeight: '100g' }
         ],
         subtotal: 1700,
         discount: 170,
@@ -182,8 +191,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: 'STM-85104',
         date: '2026-11-11',
         items: [
-          { product: PRODUCTS[0], quantity: 2, selectedWeight: '500g' },
-          { product: PRODUCTS[3], quantity: 1, selectedWeight: '250g' }
+          { product: byId('pure-honey', 0), quantity: 2, selectedWeight: '500g' },
+          { product: byId('gulkand', 3), quantity: 1, selectedWeight: '250g' }
         ],
         subtotal: 750,
         discount: 0,
@@ -203,8 +212,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: 'STM-85219',
         date: '2026-11-11',
         items: [
-          { product: PRODUCTS[8] || PRODUCTS[7], quantity: 3, selectedWeight: '100g' },
-          { product: PRODUCTS[9] || PRODUCTS[8], quantity: 2, selectedWeight: '250g' }
+          { product: byId('mudavatukal-soup', 9), quantity: 3, selectedWeight: '100g' },
+          { product: byId('karuppukavani-kanji', 10), quantity: 2, selectedWeight: '250g' }
         ],
         subtotal: 1240,
         discount: 100,
@@ -253,7 +262,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchServerStore = useCallback(async () => {
     try {
-      const response = await fetch('/api/store', { cache: 'no-store' });
+      const response = await fetch(`/api/store?_t=${Date.now()}`, { cache: 'no-store' });
       if (response.ok) {
         const data = (await response.json()) as StoreSyncPayload;
         applyServerSnapshot(data);
@@ -302,12 +311,20 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
+    // Fallback sync every 15s when tab is active
+    const syncTimer = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        fetchServerStore();
+      }
+    }, 15000);
+
     window.addEventListener('focus', handleVisibilityOrFocus);
     document.addEventListener('visibilitychange', handleVisibilityOrFocus);
 
     return () => {
       eventSource?.close();
       broadcastChannelRef.current?.close();
+      window.clearInterval(syncTimer);
       window.removeEventListener('focus', handleVisibilityOrFocus);
       document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
     };
@@ -399,10 +416,15 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addToCart = (product: Product, quantity = 1, weight?: string) => {
-    const selectedWeight = weight || product.defaultWeight;
+    const latest = products.find(p => p.id === product.id) || product;
+    if (!latest.inStock) {
+      showToast('Out of Stock', `${latest.name} is currently out of stock.`, 'warning', latest.image);
+      return;
+    }
+    const selectedWeight = weight || latest.defaultWeight;
 
     setCart(prev => {
-      const existingIndex = prev.findIndex(item => item.product.id === product.id && item.selectedWeight === selectedWeight);
+      const existingIndex = prev.findIndex(item => item.product.id === latest.id && item.selectedWeight === selectedWeight);
       if (existingIndex > -1) {
         const updated = [...prev];
         updated[existingIndex] = {
@@ -411,10 +433,10 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
         return updated;
       }
-      return [...prev, { product, quantity, selectedWeight }];
+      return [...prev, { product: latest, quantity, selectedWeight }];
     });
 
-    showToast('Added to Cart', `${product.name} (${selectedWeight}) has been added to your bag.`, 'success', product.image);
+    showToast('Added to Cart', `${latest.name} (${selectedWeight}) has been added to your bag.`, 'success', latest.image);
   };
 
   const removeFromCart = (productId: string, weight: string) => {
@@ -458,8 +480,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const applyCoupon = (code: string) => {
     const cleanCode = code.trim().toUpperCase();
-    if (cleanCode === 'STARTONE10') {
-      setAppliedCoupon({ code: 'STARTONE10', discountPercent: 10, discountFixed: 0 });
+    if (cleanCode === 'BANAYANA10' || cleanCode === 'STARTONE10') {
+      setAppliedCoupon({ code: cleanCode, discountPercent: 10, discountFixed: 0 });
       showToast('Coupon Applied!', '10% discount applied to your order.', 'success');
       return { success: true, message: '10% OFF coupon applied successfully!' };
     }
@@ -472,11 +494,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: true, message: '15% OFF coupon applied successfully!' };
     }
     if (cleanCode === 'FREESHIP') {
-      setAppliedCoupon({ code: 'FREESHIP', discountPercent: 0, discountFixed: 60 });
+      setAppliedCoupon({ code: 'FREESHIP', discountPercent: 0, discountFixed: 0 });
       showToast('Coupon Applied!', 'Free shipping voucher applied.', 'success');
       return { success: true, message: 'Free shipping voucher applied!' };
     }
-    return { success: false, message: 'Invalid coupon code. Try STARTONE10 or NATURAL15' };
+    return { success: false, message: 'Invalid coupon code. Try BANAYANA10 or NATURAL15' };
   };
 
   const removeCoupon = () => {
@@ -490,8 +512,18 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const openQuickCheckout = (product: Product, weight?: string) => {
-    addToCart(product, 1, weight);
+    const latest = products.find(p => p.id === product.id) || product;
+    if (!latest.inStock) {
+      showToast('Out of Stock', `${latest.name} is currently out of stock.`, 'warning', latest.image);
+      return;
+    }
+    addToCart(latest, 1, weight);
     setActiveModal('checkout');
+  };
+
+  const openOrderTracking = (orderId: string) => {
+    setTrackingLookupId(orderId);
+    setActiveModal('trackOrder');
   };
 
   // Calculations
@@ -774,6 +806,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         dismissToast,
         openProductDetail,
         openQuickCheckout,
+        trackingLookupId,
+        setTrackingLookupId,
+        openOrderTracking,
         updateProduct,
         addProduct,
         deleteProduct,
