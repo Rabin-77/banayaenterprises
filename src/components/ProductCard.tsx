@@ -3,7 +3,7 @@ import { Heart, Star, ShoppingBag, Eye, Zap, Check } from 'lucide-react';
 import { Product } from '../types';
 import { useShop } from '../context/ShopContext';
 import { getPriceForProductWeight } from '../utils/pricing';
-import { handleProductImageError, isLocalAssetImage } from '../utils/imageFallback';
+import { handleProductImageError } from '../utils/imageFallback';
 
 interface ProductCardProps {
   product: Product;
@@ -53,21 +53,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div
       id={`product-card-${product.id}`}
       onClick={() => openProductDetail(product)}
-      className="group bg-white rounded-2xl border border-slate-200/90 hover:border-emerald-500/60 transition-all duration-300 shadow-xs hover:shadow-xl flex flex-col justify-between overflow-hidden cursor-pointer transform hover:-translate-y-1.5 active:scale-[0.99]"
+      className="h-full group bg-white rounded-2xl border border-slate-200/90 hover:border-emerald-500/60 transition-all duration-300 shadow-xs hover:shadow-xl flex flex-col justify-between overflow-hidden cursor-pointer sm:transform sm:hover:-translate-y-1.5 active:scale-[0.99]"
     >
       {/* Product Image Header Container */}
-      <div className="relative aspect-square w-full bg-slate-50 overflow-hidden flex items-center justify-center">
+      <div className="relative aspect-square w-full bg-white overflow-hidden flex items-center justify-center border-b border-slate-100">
         <img
           src={product.image}
           alt={product.name}
           onError={(e) => handleProductImageError(e, product)}
-          className={`w-full h-full transition-transform duration-700 ease-out ${
-            product.image.includes('rose_gulkand')
-              ? 'object-cover object-center group-hover:scale-108'
-              : isLocalAssetImage(product.image)
-                ? 'object-contain p-2.5 sm:p-3 group-hover:scale-108'
-                : 'object-cover object-center group-hover:scale-108'
-          }`}
+          className="w-full h-full object-contain object-center p-2.5 sm:p-3"
           loading="lazy"
           referrerPolicy="no-referrer"
         />
@@ -110,8 +104,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${inWishlist ? 'fill-rose-600 text-rose-600' : ''}`} />
         </button>
 
-        {/* Quick View Button overlay on hover */}
-        <div className="absolute inset-x-0 bottom-3 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 px-3">
+        {/* Quick View Button overlay on desktop hover */}
+        <div className="hidden sm:flex absolute inset-x-0 bottom-3 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 px-3">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -126,49 +120,49 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Card Details Body */}
-      <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between">
+      <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between min-w-0">
         
-        <div>
+        <div className="min-w-0">
           {/* Rating & Origin */}
-          <div className="flex items-center justify-between gap-1 text-xs mb-1.5">
+          <div className="flex items-center justify-between gap-1 text-xs mb-1.5 min-w-0">
             <div className="flex items-center gap-0.5 sm:gap-1 text-slate-800 font-bold shrink-0">
               <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400" />
               <span className="text-[11px] sm:text-xs">{product.rating}</span>
               <span className="text-slate-400 font-normal text-[10px] sm:text-[11px]">({product.reviewsCount})</span>
             </div>
-            <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium truncate max-w-[68px] sm:max-w-[110px] bg-slate-100 px-1.5 py-0.5 rounded">
+            <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium truncate max-w-[60px] sm:max-w-[110px] bg-slate-100 px-1.5 py-0.5 rounded">
               {product.origin.split(',')[0]}
             </span>
           </div>
 
           {/* Product Name & Tamil Subtitle */}
-          <div className="mb-1.5">
-            <h3 className="font-heading text-sm sm:text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors leading-tight line-clamp-1">
+          <div className="mb-1.5 min-w-0">
+            <h3 className="font-heading text-[13px] sm:text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors leading-tight line-clamp-2 sm:line-clamp-1">
               {product.name}
             </h3>
             {product.tamilName && (
-              <span className="text-[11px] font-medium text-emerald-700 tracking-wide block mt-0.5">
+              <span className="text-[10.5px] sm:text-[11px] font-medium text-emerald-700 tracking-wide block mt-0.5 truncate">
                 {product.tamilName}
               </span>
             )}
           </div>
 
           {/* Short description */}
-          <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-3">
+          <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2 leading-relaxed mb-2.5 sm:mb-3">
             {product.tagline}
           </p>
         </div>
 
         {/* Weights Selection & Pricing */}
-        <div>
+        <div className="min-w-0">
           {/* Weight selector pills */}
           {product.weightOptions.length > 1 && (
-            <div className="flex flex-wrap gap-1 mb-3" onClick={(e) => e.stopPropagation()}>
+            <div className="flex flex-wrap gap-1 mb-2.5 sm:mb-3" onClick={(e) => e.stopPropagation()}>
               {product.weightOptions.map((wt) => (
                 <button
                   key={wt}
                   onClick={() => setSelectedWeight(wt)}
-                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-lg border transition-colors cursor-pointer ${
+                  className={`text-[9.5px] sm:text-[10px] font-semibold px-1.5 sm:px-2 py-0.5 rounded-lg border transition-colors cursor-pointer ${
                     selectedWeight === wt
                       ? 'bg-[#064E3B] text-white border-[#064E3B]'
                       : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
@@ -182,15 +176,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {/* Price Container */}
           <div className="flex items-baseline flex-wrap gap-1 sm:gap-2 mb-2.5 sm:mb-3">
-            <span className="text-base sm:text-xl font-bold text-slate-950 font-heading whitespace-nowrap">
+            <span className="text-[15px] sm:text-xl font-bold text-slate-950 font-heading whitespace-nowrap">
               ₹{currentPrices.price}
             </span>
             {currentPrices.original > currentPrices.price && (
               <>
-                <span className="text-[11px] sm:text-xs text-slate-400 line-through font-normal whitespace-nowrap">
+                <span className="text-[10px] sm:text-xs text-slate-400 line-through font-normal whitespace-nowrap">
                   ₹{currentPrices.original}
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded whitespace-nowrap shrink-0">
+                <span className="text-[9px] sm:text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1 sm:px-1.5 py-0.5 rounded whitespace-nowrap shrink-0">
                   {discountPercent}% OFF
                 </span>
               </>
@@ -198,12 +192,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           {/* Action Buttons: Add to Cart & Buy Now */}
-          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-2 gap-1 sm:gap-2 pt-2 border-t border-slate-100">
             <button
               id={`add-to-cart-btn-${product.id}`}
               disabled={!product.inStock}
               onClick={handleAddToCart}
-              className={`py-2 px-1 sm:px-2 rounded-xl font-semibold text-[11px] sm:text-xs transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${
+              className={`py-2 px-1 sm:px-2 rounded-xl font-semibold text-[10.5px] sm:text-xs transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${
                 !product.inStock
                   ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
                   : isAddedAnim
@@ -229,7 +223,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               id={`buy-now-btn-${product.id}`}
               disabled={!product.inStock}
               onClick={handleBuyNow}
-              className={`py-2 px-1 sm:px-2 rounded-xl font-semibold text-[11px] sm:text-xs transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${
+              className={`py-2 px-1 sm:px-2 rounded-xl font-semibold text-[10.5px] sm:text-xs transition-all duration-200 flex items-center justify-center gap-1 whitespace-nowrap ${
                 product.inStock
                   ? 'bg-[#064E3B] hover:bg-[#047857] active:scale-95 text-white shadow-xs hover:shadow-md cursor-pointer'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed'

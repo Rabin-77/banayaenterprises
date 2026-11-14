@@ -22,12 +22,12 @@
       "Wildflower",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794565921243-d69832.png",
+    "image": "/images/banaya_honey.jpg",
     "gallery": [
-      "/uploads/1-1794565921243-d69832.png",
+      "/images/banaya_honey.jpg",
       "/assets/aistudio/honey_web_1d34d9ea.jfif",
-      "/uploads/2-1794565950101-a8464d.webp",
-      "/uploads/3-1794565953389-91e6eb.webp"
+      "/images/natural_honey_jar.jpg",
+      "/images/honeycomb_macro.jpg"
     ],
     "description": "Banaya Enterprise 100% Pure Wildflower Honey is harvested directly from happy bees and natural honeycombs using traditional cold filtering without heating, pasteurization, or adulteration. Rich in natural bee pollen, live enzymes, and organic floral nectars, this golden nectar offers wholesome nutrition and natural sweetness for the entire family.",
     "ingredients": [
@@ -67,11 +67,11 @@
       "Wild Harvested",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794563473231-bdec82.webp",
+    "image": "/images/natural_honey_jar.jpg",
     "gallery": [
-      "/uploads/1-1794563473231-bdec82.webp",
-      "/uploads/2-1794563476636-ed85df.webp",
-      "/uploads/3-1794563480600-32a974.webp"
+      "/images/natural_honey_jar.jpg",
+      "/images/honeycomb_macro.jpg",
+      "/assets/aistudio/1_99cf5a09.webp"
     ],
     "description": "Magarantha Thean (Bee Pollen Honey) is naturally concentrated with active flower pollen collected by wild honey bees from diverse medicinal herbs in deep virgin forests. Unheated and free from added corn syrups, this dark amber elixir retains its natural living enzymes, flavonoids, and vital bio-nutrients.",
     "ingredients": [
@@ -113,12 +113,11 @@
       "Rock Cliff Harvest",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794563531964-524df0.webp",
+    "image": "/images/malai_thean_bottle.jpg",
     "gallery": [
-      "/uploads/1-1794563531964-524df0.webp",
-      "/uploads/2-1794563565911-79553c.webp",
-      "/uploads/3-1794563541407-c59174.webp",
-      "/uploads/4-1794563589757-69b081.webp"
+      "/images/malai_thean_bottle.jpg",
+      "/assets/aistudio/1_99cf5a09.webp",
+      "/images/honeycomb_macro.jpg"
     ],
     "description": "Harvested ethically from giant wild rock bee colonies (Apis dorsata) nestled high in cliff precipices of the Eastern and Western Ghats. Malai Thean carries a rich, deep woody aroma and unparalleled therapeutic potency derived from wild medicinal hill herbs and tall mountain tree canopies.",
     "ingredients": [
@@ -132,101 +131,6 @@
     ],
     "howToUse": "Consume 1 tablespoon with lukewarm milk at night or with warm herbal decoctions. Ideal for daily sweetening.",
     "origin": "Kolli Hills & Nilgiri Foothills",
-    "isBestSeller": true,
-    "isNew": false
-  },
-  {
-    "id": "gulkand",
-    "name": "Rose Gulkand",
-    "tamilName": "ரோஜா குல்கந்து",
-    "tagline": "Sun-Cured Damask Rose Petal Preserve with Forest Honey",
-    "category": "Honey & Natural Sweeteners",
-    "categorySlug": "honey-sweeteners",
-    "price": 150,
-    "originalPrice": 190,
-    "rating": 4.85,
-    "reviewsCount": 116,
-    "inStock": true,
-    "weightOptions": [
-      "250g",
-      "500g",
-      "1kg"
-    ],
-    "defaultWeight": "250g",
-    "badges": [
-      "Sun Matured",
-      "No Refined Sugar",
-      "Bestseller"
-    ],
-    "image": "/uploads/1-1794563612090-18914b.png",
-    "gallery": [
-      "/uploads/1-1794563612090-18914b.png",
-      "/uploads/2-1794563615341-e99592.webp",
-      "/uploads/3-1794563621432-24da2f.webp"
-    ],
-    "description": "Slowly sun-cooked for 45 days in traditional glass containers using aromatic indigenous Damask Rose (Chaiti Gulab) petals, natural rock sugar (Dhaga Mishri), and pure raw honey. This authentic Ayurvedic preparation acts as a natural body coolant and digestive rejuvenator.",
-    "ingredients": [
-      "Fresh Native Damask Rose Petals (Rosa damascena)",
-      "Unrefined Rock Sugar (Mishri)",
-      "Raw Forest Honey",
-      "Cardamom Seeds",
-      "Praval Pishti Traces"
-    ],
-    "keyBenefits": [
-      "Pacifies excess Pitta, reducing body heat, acidity, and fatigue",
-      "Alleviates acid reflux, bloating, and stomach inflammation",
-      "Enhances natural skin glow and calms stress-induced breakouts",
-      "Improves sleep quality and calms the nervous system"
-    ],
-    "howToUse": "Take 1 to 2 teaspoons directly twice daily after meals, or blend into chilled milk to make a refreshing rose beverage.",
-    "origin": "Pushkar & Thanjavur Rose Gardens",
-    "isBestSeller": true,
-    "isNew": false
-  },
-  {
-    "id": "honey-amla",
-    "name": "Honey Amla",
-    "tamilName": "தேன் நெல்லிக்காய்",
-    "tagline": "Wild Forest Honey-Soaked Mountain Indian Gooseberry",
-    "category": "Traditional Wellness",
-    "categorySlug": "traditional-wellness",
-    "price": 250,
-    "originalPrice": 320,
-    "rating": 4.88,
-    "reviewsCount": 94,
-    "inStock": true,
-    "weightOptions": [
-      "250g",
-      "500g",
-      "1kg"
-    ],
-    "defaultWeight": "500g",
-    "badges": [
-      "Vitamin C Rich",
-      "Digestive Tonic",
-      "Bestseller"
-    ],
-    "image": "/uploads/1-1794563705389-04f550.webp",
-    "gallery": [
-      "/uploads/1-1794563705389-04f550.webp",
-      "/uploads/2-1794563709771-3a4eca.webp",
-      "/uploads/3-1794563714119-83c12b.webp"
-    ],
-    "description": "Whole organic wild Indian Gooseberries (Amla / Nellikai) pricked and steeped for months in pure raw multifloral honey. The natural astringency and sourness of fresh vitamin-rich Amla balances harmoniously with the sweet honey to create a delicious, therapeutic daily immunity booster.",
-    "ingredients": [
-      "Fresh Mountain Amla (Phyllanthus emblica)",
-      "Raw Forest Honey",
-      "Cardamom",
-      "Dry Ginger Extract"
-    ],
-    "keyBenefits": [
-      "Extremely rich source of bio-available Vitamin C and natural polyphenols",
-      "Strengthens hair roots, delays premature graying, and promotes clear skin",
-      "Enhances liver function and accelerates digestive metabolism",
-      "Supports healthy eyesight, hemoglobin levels, and cellular vitality"
-    ],
-    "howToUse": "Eat 1 to 2 soaked Amla pieces daily in the morning or after meals, sipping a spoonful of the infused honey syrup.",
-    "origin": "Dindigul & Salem Orchards",
     "isBestSeller": true,
     "isNew": false
   },
@@ -253,11 +157,10 @@
       "Zero Preservatives",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794563763588-437fa3.webp",
+    "image": "/assets/aistudio/2_6b73aea0.png",
     "gallery": [
-      "/uploads/1-1794563763588-437fa3.webp",
-      "/uploads/2-1794563768964-77558a.webp",
-      "/uploads/3-1794563783373-d3ff2c.webp"
+      "/assets/aistudio/2_6b73aea0.png",
+      "/assets/aistudio/3_de51924a.png"
     ],
     "description": "A luxurious master-blend of hand-selected Kashmiri Mamra Almonds, W240 Goa Cashew Nuts, Iranian Green Pistachios, Chilean Walnuts, Afghan Black Raisins, and nutrient-dense Pumpkin & Sunflower Seeds. Lightly slow-roasted without oil to seal in crunch and essential fatty acids.",
     "ingredients": [
@@ -281,147 +184,147 @@
     "isNew": false
   },
   {
-    "id": "abc-malt",
-    "name": "ABC Malt",
-    "tamilName": "ஏபிசி மால்ட்",
-    "tagline": "Healthy. Tasty. Nutritious malt.",
-    "category": "Health Drinks & Malt",
-    "categorySlug": "health-drinks",
-    "price": 200,
-    "originalPrice": 250,
-    "rating": 4.96,
-    "reviewsCount": 210,
+    "id": "honey-amla",
+    "name": "Honey Amla",
+    "tamilName": "தேன் நெல்லிக்காய்",
+    "tagline": "Wild Forest Honey-Soaked Mountain Indian Gooseberry",
+    "category": "Traditional Wellness",
+    "categorySlug": "traditional-wellness",
+    "price": 250,
+    "originalPrice": 320,
+    "rating": 4.88,
+    "reviewsCount": 94,
     "inStock": true,
     "weightOptions": [
-      "100g",
       "250g",
-      "500g"
+      "500g",
+      "1kg"
     ],
-    "defaultWeight": "100g",
+    "defaultWeight": "500g",
     "badges": [
-      "100% Natural",
-      "No Artificial Flavours",
-      "No Added Preservatives",
+      "Vitamin C Rich",
+      "Digestive Tonic",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794563826283-d5bb35.webp",
+    "image": "/images/banaya_amla.webp",
     "gallery": [
-      "/uploads/1-1794563826283-d5bb35.webp",
-      "/uploads/2-1794563830588-b2e495.webp",
-      "/uploads/3-1794563835591-f5fb5f.webp"
+      "/images/banaya_amla.webp",
+      "/assets/aistudio/amla_bade78da.webp",
+      "/assets/aistudio/3_1f3dbf7a.png"
     ],
-    "description": "Banaya Enterprise Abc Malt is a wholesome blend of Apple, Beetroot, Carrot, Dates, Nuts & Seeds, Makhana, and Cane Jaggery. 100% natural, healthy, tasty, and nutritious for the entire family with zero added preservatives and no artificial flavours.",
+    "description": "Whole organic wild Indian Gooseberries (Amla / Nellikai) pricked and steeped for months in pure raw multifloral honey. The natural astringency and sourness of fresh vitamin-rich Amla balances harmoniously with the sweet honey to create a delicious, therapeutic daily immunity booster.",
     "ingredients": [
-      "Apple",
-      "Beetroot",
-      "Carrot",
-      "Dates",
-      "Nuts & Seeds (Almonds, Cashews, Walnuts)",
-      "Makhana (Fox Nuts)",
-      "Cane Jaggery"
+      "Fresh Mountain Amla (Phyllanthus emblica)",
+      "Raw Forest Honey",
+      "Cardamom",
+      "Dry Ginger Extract"
     ],
     "keyBenefits": [
-      "Boosts heart health and vitality",
-      "Helps to get clear & glowing skin",
-      "Increases haemoglobin level in blood",
-      "Improves eye health and vision clarity",
-      "Detoxifies the body naturally"
+      "Extremely rich source of bio-available Vitamin C and natural polyphenols",
+      "Strengthens hair roots, delays premature graying, and promotes clear skin",
+      "Enhances liver function and accelerates digestive metabolism",
+      "Supports healthy eyesight, hemoglobin levels, and cellular vitality"
     ],
-    "howToUse": "1. Add 1-2 teaspoon malt into a cup.\n2. Add 150ml of hot milk.\n3. Mix it well and enjoy your malt.",
-    "origin": "Banayana Enterprise Certified Facility",
+    "howToUse": "Eat 1 to 2 soaked Amla pieces daily in the morning or after meals, sipping a spoonful of the infused honey syrup.",
+    "origin": "Dindigul & Salem Orchards",
     "isBestSeller": true,
     "isNew": false
   },
   {
-    "id": "desi-cow-ghee",
-    "name": "Ghee",
-    "tamilName": "நாட்டுப்பசு நெய்",
-    "tagline": "Traditional A2 Bilona Churned Golden Desi Cow Ghee",
-    "category": "Ghee & Foods",
-    "categorySlug": "ghee-foods",
-    "price": 450,
-    "originalPrice": 550,
-    "rating": 4.97,
-    "reviewsCount": 230,
-    "inStock": true,
-    "weightOptions": [
-      "400ml",
-      "1 Litre"
-    ],
-    "defaultWeight": "400ml",
-    "badges": [
-      "A2 Certified",
-      "Bilona Churned",
-      "Bestseller"
-    ],
-    "image": "/uploads/1-1794563904747-d5dbde.png",
-    "gallery": [
-      "/uploads/1-1794563904747-d5dbde.png",
-      "/uploads/2-1794563908567-d79a63.webp",
-      "/uploads/3-1794563912577-9a81d9.webp"
-    ],
-    "description": "Prepared strictly through the ancient Vedic Bilona method: fresh whole milk from freely-grazed indigenous Indian Gir & Kangayam cows is cultured into curd, hand-churned with a wooden churner (Bilona) to separate cultured butter (Makkhan), and slow-boiled in brass cauldrons with moringa leaves to yield fragrant granular golden ghee.",
-    "ingredients": [
-      "100% Cultured Grass-Fed Desi Cow Milk Fat (A2 Beta-Casein)"
-    ],
-    "keyBenefits": [
-      "Rich in fat-soluble vitamins (A, D, E, K2) and healthy Butyric Acid",
-      "Lubricates joints, nourishes brain tissues, and enhances digestion (Agni)",
-      "Granular texture with an intoxicating traditional nutty aroma",
-      "100% free from preservatives, colors, and synthetic additives"
-    ],
-    "howToUse": "Drizzle 1 teaspoon over hot steamed rice, dosas, rotis, or lentil dal. Highly recommended for daily Ayurvedic cooking and infant nutrition.",
-    "origin": "Vedic Organic Gaushala, Tamil Nadu",
-    "isBestSeller": true,
-    "isNew": false
-  },
-  {
-    "id": "natural-soap",
-    "name": "Natural Soap",
-    "tamilName": "இயற்கை மூலிகை சோப்",
-    "tagline": "Handcrafted Cold Process Herbal Bath Bar with Neem, Tulsi & Virgin Coconut Oil",
-    "category": "Herbal Products",
-    "categorySlug": "herbal-products",
+    "id": "gulkand",
+    "name": "Rose Gulkand",
+    "tamilName": "ரோஜா குல்கந்து",
+    "tagline": "Sun-Cured Damask Rose Petal Preserve with Forest Honey",
+    "category": "Honey & Natural Sweeteners",
+    "categorySlug": "honey-sweeteners",
     "price": 150,
     "originalPrice": 190,
-    "rating": 4.82,
-    "reviewsCount": 88,
+    "rating": 4.85,
+    "reviewsCount": 116,
     "inStock": true,
     "weightOptions": [
-      "100g",
-      "Pack of 3 (300g)",
-      "Pack of 5 (500g)"
+      "250g",
+      "500g",
+      "1kg"
     ],
-    "defaultWeight": "100g",
+    "defaultWeight": "250g",
     "badges": [
-      "SLS & Paraben Free",
-      "Cold Processed",
+      "Sun Matured",
+      "No Refined Sugar",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794563951103-163478.png",
+    "image": "/assets/aistudio/3_6493340b.png",
     "gallery": [
-      "/uploads/1-1794563951103-163478.png",
-      "/uploads/2-1794563954923-418957.webp",
-      "/uploads/3-1794563960018-ac57c7.webp"
+      "/assets/aistudio/3_6493340b.png",
+      "/images/banaya_rose_gulkand.jpg"
     ],
-    "description": "Cured naturally for 6 weeks, this artisanal cold-process bathing bar is formulated with pure wood-pressed coconut oil, fresh crushed neem leaves, sacred holy basil (Tulsi), raw turmeric, and unrefined Shea butter. Gently cleanses without stripping essential skin moisture.",
+    "description": "Slowly sun-cooked for 45 days in traditional glass containers using aromatic indigenous Damask Rose (Chaiti Gulab) petals, natural rock sugar (Dhaga Mishri), and pure raw honey. This authentic Ayurvedic preparation acts as a natural body coolant and digestive rejuvenator.",
     "ingredients": [
-      "Wood-Pressed Virgin Coconut Oil",
-      "Pure Castor Oil",
-      "Raw Shea Butter",
-      "Fresh Neem Leaf Extract (Azadirachta indica)",
-      "Holy Tulsi Extract",
-      "Wild Turmeric Essential Oil",
-      "Sandalwood Aroma"
+      "Fresh Native Damask Rose Petals (Rosa damascena)",
+      "Unrefined Rock Sugar (Mishri)",
+      "Raw Forest Honey",
+      "Cardamom Seeds",
+      "Praval Pishti Traces"
     ],
     "keyBenefits": [
-      "Natural antibacterial and antifungal protection for daily hygiene",
-      "Calms skin irritation, back acne, and body odors naturally",
-      "Creamy rich lather that leaves skin velvety soft and deeply hydrated",
-      "Zero palm oil, zero chemical fragrances, biodegradable and safe for all skin types"
+      "Pacifies excess Pitta, reducing body heat, acidity, and fatigue",
+      "Alleviates acid reflux, bloating, and stomach inflammation",
+      "Enhances natural skin glow and calms stress-induced breakouts",
+      "Improves sleep quality and calms the nervous system"
     ],
-    "howToUse": "Lather between wet palms or with a natural loofah, apply all over body during bath or shower, and rinse clean with water.",
-    "origin": "Auroville Artisanal Workshop",
+    "howToUse": "Take 1 to 2 teaspoons directly twice daily after meals, or blend into chilled milk to make a refreshing rose beverage.",
+    "origin": "Pushkar & Thanjavur Rose Gardens",
+    "isBestSeller": true,
+    "isNew": false
+  },
+  {
+    "id": "karuppukavani-kanji",
+    "name": "Karuppukavani Kanji (Black Rice Powder)",
+    "tamilName": "கருப்புக்கவுனி கஞ்சி",
+    "tagline": "Ancient Chettinad Royal Black Rice Porridge & Health Mix",
+    "category": "Health Drinks & Malt",
+    "categorySlug": "health-drinks",
+    "price": 320,
+    "originalPrice": 400,
+    "rating": 4.93,
+    "reviewsCount": 172,
+    "inStock": true,
+    "weightOptions": [
+      "250g",
+      "500g",
+      "1kg"
+    ],
+    "defaultWeight": "250g",
+    "badges": [
+      "High Anthocyanin",
+      "Low Glycemic",
+      "Bestseller"
+    ],
+    "image": "/images/karuppu_kavuni_kanji_front.jpg",
+    "gallery": [
+      "/images/karuppu_kavuni_kanji_front.jpg",
+      "/images/karuppu_kavuni_kanji_back.jpg",
+      "/assets/aistudio/2_a1d23cb5.png"
+    ],
+    "description": "Banaya Enterprise Karuppu Kavuni Kanji Mix is an authentic traditional heritage porridge blend crafted from Ancient Karupu kavuni black rice, Poongar rice, Karuppu kollu, Pearl millet, Pepper, Moong dal, Jeera, and Garlic. Healthy, tasty, and nutritious mix for the whole family.",
+    "ingredients": [
+      "Karupu kavuni rice",
+      "Poongar rice",
+      "Karuppu kollu (Horse gram)",
+      "Pearl millet (Kambu)",
+      "Pepper (Milagu)",
+      "Moong dal",
+      "Jeera (Cumin)",
+      "Garlic"
+    ],
+    "keyBenefits": [
+      "Helps weight management and healthy metabolism",
+      "Rich in anthocyanin antioxidants",
+      "Rich in dietary fibre for digestive wellness",
+      "Helps reduce cholesterol and maintain heart wellness"
+    ],
+    "howToUse": "1. Add 2 tsp of porridge mix in 1.5 glass of water.\n2. Add a pinch of salt & stir well.\n3. Cook for 5 mins in low heat.\n4. Add Buttermilk before consume.",
+    "origin": "Chettinad Organic Paddy Fields",
     "isBestSeller": true,
     "isNew": false
   },
@@ -448,11 +351,11 @@
       "100g Authentic Pack",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794564012891-177d52.webp",
+    "image": "/images/mudavatukal_soup_front.jpeg",
     "gallery": [
-      "/uploads/1-1794564012891-177d52.webp",
-      "/uploads/2-1794564017234-eef357.webp",
-      "/uploads/3-1794564051250-535801.webp"
+      "/images/mudavatukal_soup_front.jpeg",
+      "/images/mudavatukal_soup_back.jpeg",
+      "/assets/aistudio/2_80fb4fd9.png"
     ],
     "description": "Authentic Banaya Enterprises Mudavattukkal Soup Mix prepared with traditional Western Ghats Mudavattukal (Drynaria quercifolia / Oak-leaf fern rhizome) blended with wholesome moong dal and native spices. Highly esteemed in Siddha and folk traditions for relieving knee pain, joint stiffness, reducing inflammation, and maintaining healthy mobility.",
     "ingredients": [
@@ -480,55 +383,48 @@
     "isNew": false
   },
   {
-    "id": "karuppukavani-kanji",
-    "name": "Karuppukavani Kanji (Black Rice Powder)",
-    "tamilName": "கருப்புக்கவுனி கஞ்சி",
-    "tagline": "Ancient Chettinad Royal Black Rice Porridge & Health Mix",
-    "category": "Health Drinks & Malt",
-    "categorySlug": "health-drinks",
-    "price": 320,
-    "originalPrice": 400,
-    "rating": 4.93,
-    "reviewsCount": 172,
+    "id": "murungai-leaf-powder",
+    "name": "Murungai Leaf Powder",
+    "tamilName": "முருங்கை இலை பொடி",
+    "tagline": "100% Pure Organic Murungai Keerai Superfood Powder for Immunity & Eye Health",
+    "category": "Herbal Leaf Powders",
+    "categorySlug": "herbal-powders",
+    "price": 220,
+    "originalPrice": 280,
+    "rating": 4.96,
+    "reviewsCount": 146,
     "inStock": true,
     "weightOptions": [
+      "100g",
       "250g",
-      "500g",
-      "1kg"
+      "500g"
     ],
-    "defaultWeight": "250g",
+    "defaultWeight": "100g",
     "badges": [
-      "High Anthocyanin",
-      "Low Glycemic",
+      "Organic Superfood",
+      "Immunity & Eye Health",
       "Bestseller"
     ],
-    "image": "/uploads/1-1794564103017-e8ed7f.webp",
+    "image": "/images/murungai_pouch_front.jpg",
     "gallery": [
-      "/uploads/1-1794564103017-e8ed7f.webp",
-      "/uploads/2-1794564108711-15b99c.webp",
-      "/uploads/3-1794564133074-a4fdae.webp"
+      "/images/murungai_pouch_front.jpg",
+      "/images/murungai_leaf_powder.jpg",
+      "/assets/aistudio/2_30f571b8.png"
     ],
-    "description": "Banaya Enterprise Karuppu Kavuni Kanji Mix is an authentic traditional heritage porridge blend crafted from Ancient Karupu kavuni black rice, Poongar rice, Karuppu kollu, Pearl millet, Pepper, Moong dal, Jeera, and Garlic. Healthy, tasty, and nutritious mix for the whole family.",
+    "description": "Banaya Enterprises Organic Murungai Keerai Powder is prepared from carefully selected native drumstick moringa leaves. 100% organic, gluten-free, with no additives. Formulated to boost natural immunity and maintain good eye health.",
     "ingredients": [
-      "Karupu kavuni rice",
-      "Poongar rice",
-      "Karuppu kollu (Horse gram)",
-      "Pearl millet (Kambu)",
-      "Pepper (Milagu)",
-      "Moong dal",
-      "Jeera (Cumin)",
-      "Garlic"
+      "100% Pure Organic Shade-Dried Murungai Keerai (Moringa Leaves)"
     ],
     "keyBenefits": [
-      "Helps weight management and healthy metabolism",
-      "Rich in anthocyanin antioxidants",
-      "Rich in dietary fibre for digestive wellness",
-      "Helps reduce cholesterol and maintain heart wellness"
+      "Helps boost immunity and natural defense mechanisms",
+      "Maintains good eye health and clear vision",
+      "Rich in organic plant calcium, protein, and bioavailable iron",
+      "100% organic, gluten-free, and free from any synthetic additives"
     ],
-    "howToUse": "1. Add 2 tsp of porridge mix in 1.5 glass of water.\n2. Add a pinch of salt & stir well.\n3. Cook for 5 mins in low heat.\n4. Add Buttermilk before consume.",
-    "origin": "Chettinad Organic Paddy Fields",
+    "howToUse": "Mix 1/2 to 1 teaspoon in warm water, herbal tea, soup, or fresh buttermilk. Can also be blended into idli/dosa batter and daily cooking.",
+    "origin": "Banaya Enterprises Organic Groves, Tamil Nadu",
     "isBestSeller": true,
-    "isNew": false
+    "isNew": true
   },
   {
     "id": "curry-leaf-powder",
@@ -551,13 +447,12 @@
     "badges": [
       "Hair Health & Iron",
       "100% Shade Dried",
-      "New"
+      "Bestseller"
     ],
-    "image": "/uploads/1-1794565636176-e6c2b7.webp",
+    "image": "/images/curry_leaf_pouch_front.jpg",
     "gallery": [
-      "/uploads/1-1794565636176-e6c2b7.webp",
-      "/uploads/2-1794565641477-29f72f.webp",
-      "/uploads/3-1794565647647-33bccf.webp"
+      "/images/curry_leaf_pouch_front.jpg",
+      "/images/curry_leaf_powder.jpg"
     ],
     "description": "Banaya Enterprises Organic Curry Leaf Powder (Kariveppilai) is 100% organic, gluten-free, with no additives. Formulated to support digestion, metabolic health, and natural beauty. Handpicked fresh leaves shade-dried to retain volatile essential nutrients and bioavailable minerals.",
     "ingredients": [
@@ -576,16 +471,106 @@
     "isNew": true
   },
   {
-    "id": "murungai-leaf-powder",
-    "name": "Murungai Leaf Powder",
-    "tamilName": "முருங்கை இலை பொடி",
-    "tagline": "100% Pure Organic Murungai Keerai Superfood Powder for Immunity & Eye Health",
-    "category": "Herbal Leaf Powders",
-    "categorySlug": "herbal-powders",
-    "price": 220,
-    "originalPrice": 280,
+    "id": "natural-soap",
+    "name": "Natural Soap",
+    "tamilName": "இயற்கை மூலிகை சோப்",
+    "tagline": "Handcrafted Cold Process Herbal Bath Bar with Neem, Tulsi & Virgin Coconut Oil",
+    "category": "Herbal Products",
+    "categorySlug": "herbal-products",
+    "price": 150,
+    "originalPrice": 190,
+    "rating": 4.82,
+    "reviewsCount": 88,
+    "inStock": true,
+    "weightOptions": [
+      "100g",
+      "Pack of 3 (300g)",
+      "Pack of 5 (500g)"
+    ],
+    "defaultWeight": "100g",
+    "badges": [
+      "SLS & Paraben Free",
+      "Cold Processed",
+      "Bestseller"
+    ],
+    "image": "/assets/aistudio/3_2e9e6c51.png",
+    "gallery": [
+      "/assets/aistudio/3_2e9e6c51.png",
+      "/assets/aistudio/2_b23bdfca.png"
+    ],
+    "description": "Cured naturally for 6 weeks, this artisanal cold-process bathing bar is formulated with pure wood-pressed coconut oil, fresh crushed neem leaves, sacred holy basil (Tulsi), raw turmeric, and unrefined Shea butter. Gently cleanses without stripping essential skin moisture.",
+    "ingredients": [
+      "Wood-Pressed Virgin Coconut Oil",
+      "Pure Castor Oil",
+      "Raw Shea Butter",
+      "Fresh Neem Leaf Extract (Azadirachta indica)",
+      "Holy Tulsi Extract",
+      "Wild Turmeric Essential Oil",
+      "Sandalwood Aroma"
+    ],
+    "keyBenefits": [
+      "Natural antibacterial and antifungal protection for daily hygiene",
+      "Calms skin irritation, back acne, and body odors naturally",
+      "Creamy rich lather that leaves skin velvety soft and deeply hydrated",
+      "Zero palm oil, zero chemical fragrances, biodegradable and safe for all skin types"
+    ],
+    "howToUse": "Lather between wet palms or with a natural loofah, apply all over body during bath or shower, and rinse clean with water.",
+    "origin": "Auroville Artisanal Workshop",
+    "isBestSeller": true,
+    "isNew": false
+  },
+  {
+    "id": "desi-cow-ghee",
+    "name": "Ghee",
+    "tamilName": "நாட்டுப்பசு நெய்",
+    "tagline": "Traditional A2 Bilona Churned Golden Desi Cow Ghee",
+    "category": "Ghee & Foods",
+    "categorySlug": "ghee-foods",
+    "price": 450,
+    "originalPrice": 550,
+    "rating": 4.97,
+    "reviewsCount": 230,
+    "inStock": true,
+    "weightOptions": [
+      "400ml",
+      "1 Litre"
+    ],
+    "defaultWeight": "400ml",
+    "badges": [
+      "A2 Certified",
+      "Bilona Churned",
+      "Bestseller"
+    ],
+    "image": "/assets/aistudio/2_4b4979ee.png",
+    "gallery": [
+      "/assets/aistudio/2_4b4979ee.png"
+    ],
+    "description": "Prepared strictly through the ancient Vedic Bilona method: fresh whole milk from freely-grazed indigenous Indian Gir & Kangayam cows is cultured into curd, hand-churned with a wooden churner (Bilona) to separate cultured butter (Makkhan), and slow-boiled in brass cauldrons with moringa leaves to yield fragrant granular golden ghee.",
+    "ingredients": [
+      "100% Cultured Grass-Fed Desi Cow Milk Fat (A2 Beta-Casein)"
+    ],
+    "keyBenefits": [
+      "Rich in fat-soluble vitamins (A, D, E, K2) and healthy Butyric Acid",
+      "Lubricates joints, nourishes brain tissues, and enhances digestion (Agni)",
+      "Granular texture with an intoxicating traditional nutty aroma",
+      "100% free from preservatives, colors, and synthetic additives"
+    ],
+    "howToUse": "Drizzle 1 teaspoon over hot steamed rice, dosas, rotis, or lentil dal. Highly recommended for daily Ayurvedic cooking and infant nutrition.",
+    "origin": "Vedic Organic Gaushala, Tamil Nadu",
+    "isBestSeller": true,
+    "isNew": false
+  },
+  {
+    "id": "abc-malt",
+    "name": "ABC Malt",
+    "tamilName": "ஏபிசி மால்ட்",
+    "tagline": "Healthy. Tasty. Nutritious malt.",
+    "category": "Health Drinks & Malt",
+    "categorySlug": "health-drinks",
+    "price": 200,
+    "originalPrice": 250,
     "rating": 4.96,
-    "reviewsCount": 146,
+    "reviewsCount": 210,
     "inStock": true,
     "weightOptions": [
       "100g",
@@ -594,29 +579,39 @@
     ],
     "defaultWeight": "100g",
     "badges": [
-      "Organic Superfood",
-      "Immunity & Eye Health",
-      "New"
+      "100% Natural",
+      "No Artificial Flavours",
+      "No Added Preservatives",
+      "Bestseller"
     ],
-    "image": "/uploads/1-1794565679141-32cb63.webp",
+    "image": "/images/abc_malt_front.jpg",
     "gallery": [
-      "/uploads/1-1794565679141-32cb63.webp",
-      "/uploads/2-1794565685738-a01c89.webp",
-      "/uploads/3-1794565693979-809b6c.webp"
+      "/images/abc_malt_front.jpg",
+      "/images/abc_malt_back.jpg",
+      "/images/abc_malt_pouch.jpg",
+      "/assets/aistudio/3_7c33f12c.png",
+      "/images/abc_malt_poster.jpg"
     ],
-    "description": "Banaya Enterprises Organic Murungai Keerai Powder is prepared from carefully selected native drumstick moringa leaves. 100% organic, gluten-free, with no additives. Formulated to boost natural immunity and maintain good eye health.",
+    "description": "Banaya Enterprise Abc Malt is a wholesome blend of Apple, Beetroot, Carrot, Dates, Nuts & Seeds, Makhana, and Cane Jaggery. 100% natural, healthy, tasty, and nutritious for the entire family with zero added preservatives and no artificial flavours.",
     "ingredients": [
-      "100% Pure Organic Shade-Dried Murungai Keerai (Moringa Leaves)"
+      "Apple",
+      "Beetroot",
+      "Carrot",
+      "Dates",
+      "Nuts & Seeds (Almonds, Cashews, Walnuts)",
+      "Makhana (Fox Nuts)",
+      "Cane Jaggery"
     ],
     "keyBenefits": [
-      "Helps boost immunity and natural defense mechanisms",
-      "Maintains good eye health and clear vision",
-      "Rich in organic plant calcium, protein, and bioavailable iron",
-      "100% organic, gluten-free, and free from any synthetic additives"
+      "Boosts heart health and vitality",
+      "Helps to get clear & glowing skin",
+      "Increases haemoglobin level in blood",
+      "Improves eye health and vision clarity",
+      "Detoxifies the body naturally"
     ],
-    "howToUse": "Mix 1/2 to 1 teaspoon in warm water, herbal tea, soup, or fresh buttermilk. Can also be blended into idli/dosa batter and daily cooking.",
-    "origin": "Banaya Enterprises Organic Groves, Tamil Nadu",
+    "howToUse": "1. Add 1-2 teaspoon malt into a cup.\n2. Add 150ml of hot milk.\n3. Mix it well and enjoy your malt.",
+    "origin": "Banayana Enterprise Certified Facility",
     "isBestSeller": true,
-    "isNew": true
+    "isNew": false
   }
 ]

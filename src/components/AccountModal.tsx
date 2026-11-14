@@ -141,20 +141,13 @@ export const AccountModal: React.FC = () => {
                     <div className="space-y-2">
                       {order.items.map((item, idx) => {
                         const unitPrice = getPriceForProductWeight(item.product, item.selectedWeight).price;
-                        const isContain =
-                          item.product.image.startsWith('/images/') ||
-                          item.product.image.startsWith('/assets/') ||
-                          item.product.image.startsWith('/uploads/') ||
-                          item.product.image.startsWith('data:image/');
                         return (
                           <div key={idx} className="flex items-center justify-between text-xs text-slate-600">
                             <div className="flex items-center gap-2">
                               <img
                                 src={item.product.image}
                                 alt={item.product.name}
-                                className={`w-8 h-8 rounded-md border border-slate-200 bg-slate-50 ${
-                                  isContain ? 'object-contain p-0.5' : 'object-cover'
-                                }`}
+                                className="w-8 h-8 rounded-md border border-slate-200 bg-white object-contain object-center p-0.5"
                               />
                               <span>{item.product.name} ({item.selectedWeight}) × {item.quantity}</span>
                             </div>

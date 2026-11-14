@@ -7,7 +7,7 @@ import {
 import { useShop } from '../context/ShopContext';
 import { getProductBookingWhatsAppUrl, openWhatsAppUrl } from '../utils/whatsapp';
 import { getPriceForProductWeight } from '../utils/pricing';
-import { handleProductImageError, isLocalAssetImage } from '../utils/imageFallback';
+import { handleProductImageError } from '../utils/imageFallback';
 
 export const ProductDetailModal: React.FC = () => {
   const { 
@@ -100,23 +100,12 @@ export const ProductDetailModal: React.FC = () => {
             <div className="lg:col-span-6 space-y-4">
               
               {/* Main Active Image Frame */}
-              <div className="relative aspect-4/3 sm:aspect-square w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 shadow-inner group flex items-center justify-center p-3 sm:p-5">
+              <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-xs flex items-center justify-center p-3 sm:p-5">
                 <img
                   src={images[activeImageIdx] || selectedProduct.image}
                   alt={selectedProduct.name}
                   onError={(e) => handleProductImageError(e, selectedProduct)}
-                  className={`w-full h-full transition-transform duration-500 ${
-                    (images[activeImageIdx] || selectedProduct.image).includes('banaya') ||
-                    (images[activeImageIdx] || selectedProduct.image).includes('honey_web') ||
-                    (images[activeImageIdx] || selectedProduct.image).includes('mudavatukal') ||
-                    (images[activeImageIdx] || selectedProduct.image).includes('IMG2026') ||
-                    (images[activeImageIdx] || selectedProduct.image).includes('pouch') ||
-                    (images[activeImageIdx] || selectedProduct.image).includes('infographic') ||
-                    (images[activeImageIdx] || selectedProduct.image).includes('poster') ||
-                    isLocalAssetImage(images[activeImageIdx] || selectedProduct.image)
-                      ? 'object-contain group-hover:scale-105'
-                      : 'object-cover object-center group-hover:scale-105'
-                  }`}
+                  className="w-full h-full object-contain object-center"
                   referrerPolicy="no-referrer"
                 />
 
@@ -155,7 +144,7 @@ export const ProductDetailModal: React.FC = () => {
                     <button
                       key={idx}
                       onClick={() => setActiveImageIdx(idx)}
-                      className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer flex items-center justify-center bg-slate-50 ${
+                      className={`relative w-20 h-20 rounded-xl overflow-hidden shrink-0 border-2 transition-all cursor-pointer flex items-center justify-center bg-white ${
                         activeImageIdx === idx
                           ? 'border-emerald-600 ring-2 ring-emerald-600/20'
                           : 'border-slate-200 opacity-70 hover:opacity-100'
@@ -165,11 +154,7 @@ export const ProductDetailModal: React.FC = () => {
                         src={img} 
                         alt={`Thumbnail ${idx + 1}`} 
                         onError={(e) => handleProductImageError(e, selectedProduct)}
-                        className={`w-full h-full ${
-                          img.includes('banaya') || img.includes('honey_web') || img.includes('mudavatukal') || img.includes('IMG2026') || img.includes('pouch') || img.includes('infographic') || img.includes('poster') || isLocalAssetImage(img)
-                            ? 'object-contain p-1'
-                            : 'object-cover'
-                        }`} 
+                        className="w-full h-full object-contain object-center p-1" 
                         referrerPolicy="no-referrer" 
                       />
                       {img.includes('front') && (
@@ -503,11 +488,7 @@ export const ProductDetailModal: React.FC = () => {
                       src={relProduct.image}
                       alt={relProduct.name}
                       onError={(e) => handleProductImageError(e, relProduct)}
-                      className={`w-16 h-16 rounded-xl group-hover:scale-105 transition-transform bg-slate-50 ${
-                        isLocalAssetImage(relProduct.image)
-                          ? 'object-contain p-1'
-                          : 'object-cover'
-                      }`}
+                      className="w-16 h-16 rounded-xl bg-white border border-slate-100 object-contain object-center p-1 shrink-0"
                     />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-heading font-bold text-sm text-slate-900 group-hover:text-emerald-700 truncate">

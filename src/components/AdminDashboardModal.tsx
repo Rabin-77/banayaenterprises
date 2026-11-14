@@ -1429,13 +1429,13 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                                     <div className="flex items-center gap-3">
                                       <div 
                                         onClick={() => handleStartEditProduct(prod)}
-                                        className="w-13 h-13 rounded-xl bg-slate-100 p-1 shrink-0 flex items-center justify-center overflow-hidden border border-slate-200 cursor-pointer hover:border-emerald-500 transition-colors relative group"
+                                        className="w-13 h-13 rounded-xl bg-white p-1 shrink-0 flex items-center justify-center overflow-hidden border border-slate-200 cursor-pointer hover:border-emerald-500 transition-colors relative group"
                                         title="Click to modify photo or details"
                                       >
                                         <img
                                           src={prod.image}
                                           alt={prod.name}
-                                          className="w-full h-full object-contain"
+                                          className="w-full h-full object-contain object-center"
                                         />
                                         <div className="absolute inset-0 bg-black/40 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-xl">
                                           <Camera className="w-3.5 h-3.5" />
@@ -2322,11 +2322,11 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({ isOpen
                       return (
                         <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xl text-left space-y-3 relative overflow-hidden">
                           {/* Active Image Frame with Navigation Arrows */}
-                          <div className="relative aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 p-3 flex items-center justify-center group">
+                          <div className="relative aspect-square rounded-2xl overflow-hidden bg-white border border-slate-200 p-3 flex items-center justify-center group">
                             <img
                               src={activeImage}
                               alt={productForm.name || 'Product Preview'}
-                              className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                              className="w-full h-full object-contain object-center"
                             />
 
                             {/* Left/Right arrow navigation */}

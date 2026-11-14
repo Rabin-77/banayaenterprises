@@ -170,12 +170,12 @@ export const Hero: React.FC = () => {
                   className="absolute -bottom-4 left-2 sm:-bottom-5 sm:-left-3 z-20 bg-white/95 border border-slate-200 p-2.5 sm:p-3.5 rounded-2xl shadow-xl flex items-center gap-3 sm:gap-3.5 cursor-pointer hover:border-emerald-500 transition-all group backdrop-blur-md animate-float-reverse active:scale-95 max-w-[calc(100%-1rem)]"
                   title={`Click to view ${malaiThean.name} details`}
                 >
-                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden border border-slate-100 shrink-0 bg-slate-50">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden border border-slate-100 shrink-0 bg-white">
                     <img
                       src={malaiThean.image}
                       alt={malaiThean.name}
                       onError={(e) => handleProductImageError(e, malaiThean)}
-                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      className="w-full h-full object-contain object-center p-0.5"
                     />
                   </div>
                   <div>

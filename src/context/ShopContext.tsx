@@ -3,8 +3,12 @@ import { Product, CartItem, Order, ActiveModal } from '../types';
 import { PRODUCTS } from '../data/products';
 import { getPriceForProductWeight } from '../utils/pricing';
 import { getAdminSessionPasskey } from '../utils/adminAuth';
+import { healLegacyProductImages } from '../utils/imageFallback';
+import { sortCatalogByCanonicalOrder } from '../utils/catalogOrder';
 
 const SYNC_CHANNEL_NAME = 'banaya_store_sync';
+const CATALOG_VERSION_KEY = 'banaya_catalog_version';
+const CURRENT_CATALOG_VERSION = '2026-11-14-ordered-v3';
 
 interface ToastMessage {
   id: string;
@@ -108,15 +112,19 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Initial catalog state (quickly hydrated by server /api/store on mount)
   const [products, setProducts] = useState<Product[]>(() => {
     try {
+      const version = localStorage.getItem(CATALOG_VERSION_KEY);
       const saved = localStorage.getItem('banaya_products');
-      if (saved) {
+      if (version === CURRENT_CATALOG_VERSION && saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return sortCatalogByCanonicalOrder((parsed as Product[]).map(healLegacyProductImages));
+        }
       }
+      localStorage.setItem(CATALOG_VERSION_KEY, CURRENT_CATALOG_VERSION);
     } catch {
       // ignore localStorage read issues
     }
-    return PRODUCTS;
+    return sortCatalogByCanonicalOrder(PRODUCTS.map(healLegacyProductImages));
   });
 
   const [activeModal, setActiveModal] = useState<ActiveModal>(null);
@@ -248,7 +256,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const applyServerSnapshot = useCallback((payload: StoreSyncPayload) => {
     if (Array.isArray(payload.products) && payload.products.length > 0) {
-      setProducts(payload.products);
+      setProducts(sortCatalogByCanonicalOrder(payload.products.map(healLegacyProductImages)));
     }
     if (Array.isArray(payload.orders)) {
       setOrders(payload.orders);
@@ -323,7 +331,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           const parsed = JSON.parse(e.newValue);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            setProducts(parsed);
+            setProducts(sortCatalogByCanonicalOrder((parsed as Product[]).map(healLegacyProductImages)));
           }
         } catch {
           // ignore malformed storage value

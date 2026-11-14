@@ -3,6 +3,7 @@ import { Sparkles, SlidersHorizontal, Search, RefreshCw } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from './ProductCard';
 import { ScrollReveal } from './ScrollReveal';
+import { sortCatalogByCanonicalOrder } from '../utils/catalogOrder';
 
 export const FeaturedProducts: React.FC = () => {
   const { 
@@ -46,7 +47,7 @@ export const FeaturedProducts: React.FC = () => {
       );
     }
 
-    // Sort
+    // Sort (default preserves exact canonical storefront order & keeps newly created admin products first)
     if (sortBy === 'price-low') {
       list.sort((a, b) => a.price - b.price);
     } else if (sortBy === 'price-high') {
@@ -54,12 +55,7 @@ export const FeaturedProducts: React.FC = () => {
     } else if (sortBy === 'rating') {
       list.sort((a, b) => b.rating - a.rating);
     } else {
-      // Default: Newly added & Bestsellers first so new launches appear live at the top
-      list.sort((a, b) => {
-        const scoreA = (a.isNew ? 2 : 0) + (a.isBestSeller ? 1 : 0);
-        const scoreB = (b.isNew ? 2 : 0) + (b.isBestSeller ? 1 : 0);
-        return scoreB - scoreA;
-      });
+      list = sortCatalogByCanonicalOrder(list);
     }
 
     return list;
@@ -116,7 +112,7 @@ export const FeaturedProducts: React.FC = () => {
                 onChange={(e) => setSortBy(e.target.value)}
                 className="bg-transparent text-slate-800 font-medium focus:outline-hidden cursor-pointer text-xs sm:text-sm"
               >
-                <option value="featured">Bestsellers First</option>
+                <option value="featured">Featured Order</option>
                 <option value="rating">Highest Rated</option>
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
@@ -172,11 +168,11 @@ export const FeaturedProducts: React.FC = () => {
           </div>
         )}
 
-        {/* Products Grid */}
+        {/* Products Grid: 2 cols mobile (360/390/430), 3 cols tablet (768), 4 cols desktop (1024/1440) */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-5 lg:gap-6 items-stretch">
             {filteredProducts.map((product, idx) => (
-              <ScrollReveal key={product.id} delay={(idx % 4) * 0.07} distance={24} amount={0.08}>
+              <ScrollReveal key={product.id} delay={(idx % 4) * 0.07} distance={24} amount={0.08} className="h-full">
                 <ProductCard product={product} />
               </ScrollReveal>
             ))}

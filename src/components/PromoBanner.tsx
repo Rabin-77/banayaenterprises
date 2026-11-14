@@ -66,11 +66,11 @@ export const PromoBanner: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-center gap-6 pt-3 text-xs text-slate-300">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 pt-3 text-xs text-slate-300">
               <span>✓ Free Delivery on ₹499+</span>
-              <span>•</span>
+              <span className="hidden sm:inline">•</span>
               <span>✓ 100% Genuine Guarantee</span>
-              <span>•</span>
+              <span className="hidden sm:inline">•</span>
               <span>✓ Secure UPI & Cards</span>
             </div>
 

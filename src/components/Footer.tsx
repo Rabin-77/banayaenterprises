@@ -243,11 +243,11 @@ export const Footer: React.FC = () => {
           <p>
             © 2026 <strong className="text-slate-300">Banayana Enterprise</strong>. All Rights Reserved.
           </p>
-          <div className="flex items-center gap-4 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-4 text-[11px] text-center">
             <span>100% Genuine Natural Formulas</span>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <span>Made with Heritage in India 🇮🇳</span>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <button
               onClick={() => setActiveModal('admin')}
               className="text-slate-400 hover:text-amber-300 font-semibold transition-colors cursor-pointer flex items-center gap-1 bg-slate-900 px-2.5 py-0.5 rounded-full border border-slate-700 hover:border-amber-400/50"

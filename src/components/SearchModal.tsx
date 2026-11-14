@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Search, X, ArrowRight } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 import { Product } from '../types';
-import { handleProductImageError, isLocalAssetImage } from '../utils/imageFallback';
+import { handleProductImageError } from '../utils/imageFallback';
 
 export const SearchModal: React.FC = () => {
   const { 
@@ -211,11 +211,7 @@ export const SearchModal: React.FC = () => {
                         src={product.image}
                         alt={product.name}
                         onError={(e) => handleProductImageError(e, product)}
-                        className={`w-12 h-12 rounded-lg border border-slate-200 shrink-0 bg-white ${
-                          isLocalAssetImage(product.image)
-                            ? 'object-contain p-0.5'
-                            : 'object-cover'
-                        }`}
+                        className="w-12 h-12 rounded-lg border border-slate-200 shrink-0 bg-white object-contain object-center p-0.5"
                       />
                       <div className="min-w-0">
                         <h4 className="font-heading font-bold text-sm text-slate-900 group-hover:text-emerald-800 truncate">

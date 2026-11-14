@@ -3,6 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import express from 'express';
 import type { Request, Response, NextFunction } from 'express';
+import { sortCatalogByCanonicalOrder } from './src/utils/catalogOrder';
 
 interface StoredProduct {
   id: string;
@@ -205,7 +206,9 @@ function loadInitialStore(): StoreState {
         const raw = fs.readFileSync(filePath, 'utf8');
         const parsed = JSON.parse(raw) as Partial<StoreState>;
         return {
-          products: Array.isArray(parsed.products) && parsed.products.length > 0 ? parsed.products : defaultProducts,
+          products: Array.isArray(parsed.products) && parsed.products.length > 0
+            ? sortCatalogByCanonicalOrder(parsed.products)
+            : sortCatalogByCanonicalOrder(defaultProducts),
           orders: Array.isArray(parsed.orders) ? parsed.orders : createInitialOrders(defaultProducts),
           adminNotes: parsed.adminNotes && typeof parsed.adminNotes === 'object' ? parsed.adminNotes : {},
           updatedAt: typeof parsed.updatedAt === 'number' ? parsed.updatedAt : Date.now()
